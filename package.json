@@ -1,0 +1,19 @@
+{
+  "name": "express-js-mvc-tuto",
+  "version": "1.0.0",
+  "main": "./src/index.js",
+  "repository": "https://github.com/Randy-RM/express-js-mvc-tuto.git",
+  "author": "Randy-RM <randymuhema@gmail.com>",
+  "license": "MIT",
+  "type": "module",
+  "scripts": {
+    "dev": "nodemon ./src/index.js"
+  },
+  "dependencies": {
+    "express": "^4.18.3",
+    "mongoose": "^8.2.1"
+  },
+  "devDependencies": {
+    "nodemon": "^3.1.0"
+  }
+}
