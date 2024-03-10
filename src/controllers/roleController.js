@@ -1,5 +1,15 @@
 /*
 --------------------------
+Retrieve one role from 
+the database.
+--------------------------
+*/
+async function getOneRole(req, res, next) {
+  return res.send("One role");
+}
+
+/*
+--------------------------
 Retrieve all roles from 
 the database.
 --------------------------
@@ -49,12 +59,20 @@ async function deleteAllRole(req, res, next) {
   return res.send("roles are deleted");
 }
 
-export { createRole, deleteAllRole, deleteRole, getAllRoles, updateRole };
+export {
+  createRole,
+  deleteAllRole,
+  deleteRole,
+  getAllRoles,
+  getOneRole,
+  updateRole,
+};
 
 export default {
-  getAllRoles,
   createRole,
+  getOneRole,
+  getAllRoles,
   updateRole,
-  deleteRole,
   deleteAllRole,
+  deleteRole,
 };
