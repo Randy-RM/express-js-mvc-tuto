@@ -4,13 +4,17 @@ import {
   deleteAllRole,
   deleteRole,
   getAllRoles,
+  getOneRole,
   updateRole,
 } from "../controllers/roleController.js";
 
 const roleRouter = Router();
 
-//Get all roles or one role by roleName
+//Get all roles
 roleRouter.get(`/`, getAllRoles);
+
+//Get one role by roleId
+roleRouter.get(`/:roleId`, getOneRole);
 
 //Create a new role
 roleRouter.post(`/add`, createRole);
