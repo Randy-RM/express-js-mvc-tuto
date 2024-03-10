@@ -1,6 +1,8 @@
 import cors from "cors";
 import dotenv from "dotenv";
 import express, { json } from "express";
+import { rolesBaseURI } from "./config/paths.js";
+import roleRouter from "./routes/roles.routes.js";
 const app = express();
 const PORT = process.env.PORT || 8000;
 const corsOptions = {
@@ -20,9 +22,7 @@ app.use((req, res, next) => {
 });
 
 // Routes
-app.get("/", (req, res) => {
-  res.json({ message: "Hello Crud Node Express" });
-});
+app.use(rolesBaseURI, roleRouter);
 
 app.listen(PORT, () => {
   console.log(`The server listens on http://localhost:${PORT}`);
