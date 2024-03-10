@@ -1,8 +1,8 @@
 import cors from "cors";
 import dotenv from "dotenv";
 import express, { json } from "express";
-import { rolesBaseURI } from "./config/paths.js";
-import roleRouter from "./routes/roles.routes.js";
+import { authBaseURI, rolesBaseURI } from "./config/paths.js";
+import { authRouter, roleRouter } from "./routes/index.js";
 const app = express();
 const PORT = process.env.PORT || 8000;
 const corsOptions = {
@@ -22,6 +22,7 @@ app.use((req, res, next) => {
 });
 
 // Routes
+app.use(authBaseURI, authRouter);
 app.use(rolesBaseURI, roleRouter);
 
 app.listen(PORT, () => {
