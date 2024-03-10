@@ -1,8 +1,8 @@
 import cors from "cors";
 import dotenv from "dotenv";
 import express, { json } from "express";
-import { authBaseURI, rolesBaseURI } from "./config/paths.js";
-import { authRouter, roleRouter } from "./routes/index.js";
+import { authBaseURI, rolesBaseURI, usersBaseURI } from "./config/paths.js";
+import { authRouter, roleRouter, userRouter } from "./routes/index.js";
 const app = express();
 const PORT = process.env.PORT || 8000;
 const corsOptions = {
@@ -24,6 +24,7 @@ app.use((req, res, next) => {
 // Routes
 app.use(authBaseURI, authRouter);
 app.use(rolesBaseURI, roleRouter);
+app.use(usersBaseURI, userRouter);
 
 app.listen(PORT, () => {
   console.log(`The server listens on http://localhost:${PORT}`);
