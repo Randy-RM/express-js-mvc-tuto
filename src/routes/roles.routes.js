@@ -1,7 +1,7 @@
 import { Router } from "express";
 import {
   createRole,
-  deleteAllRole,
+  deleteAllRoles,
   deleteRole,
   getAllRoles,
   getOneRole,
@@ -19,13 +19,13 @@ roleRouter.get(`/:roleId`, getOneRole);
 //Create a new role
 roleRouter.post(`/add`, createRole);
 
-//Update role by id
+//Update role by roleId
 roleRouter.put(`/update/:roleId`, updateRole);
 
-//Delete role by id
+//Delete role by roleId
 roleRouter.delete(`/delete/:roleId`, deleteRole);
 
-//Delete all role
-roleRouter.delete(`/delete`, deleteAllRole);
+//Delete all roles
+roleRouter.delete(`/delete`, deleteAllRoles);
 
 export default roleRouter;

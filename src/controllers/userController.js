@@ -55,13 +55,13 @@ Delete all users from
 the database.
 --------------------------
 */
-async function deleteAllUser(req, res, next) {
+async function deleteAllUsers(req, res, next) {
   return res.send("Users are deleted");
 }
 
 export {
   createUser,
-  deleteAllUser,
+  deleteAllUsers,
   deleteUser,
   getAllUsers,
   getOneUser,
@@ -70,7 +70,7 @@ export {
 
 export default {
   createUser,
-  deleteAllUser,
+  deleteAllUsers,
   deleteUser,
   getAllUsers,
   getOneUser,

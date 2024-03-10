@@ -1,7 +1,7 @@
 import { Router } from "express";
 import {
   createUser,
-  deleteAllUser,
+  deleteAllUsers,
   deleteUser,
   getAllUsers,
   getOneUser,
@@ -25,7 +25,7 @@ userRouter.put(`/update/:userId`, updateUser);
 //Delete user by userId
 userRouter.delete(`/delete/:userId`, deleteUser);
 
-//Delete all user
-userRouter.delete(`/delete`, deleteAllUser);
+//Delete all users
+userRouter.delete(`/delete`, deleteAllUsers);
 
 export default userRouter;

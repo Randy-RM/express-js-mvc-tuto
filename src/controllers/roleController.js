@@ -25,7 +25,7 @@ in the database
 --------------------------
 */
 async function createRole(req, res, next) {
-  return res.send("role is Created");
+  return res.send("Role is created");
 }
 
 /*
@@ -35,7 +35,7 @@ in the request
 --------------------------
 */
 async function updateRole(req, res, next) {
-  return res.send("role is Updated");
+  return res.send("Role is updated");
 }
 
 /*
@@ -46,7 +46,7 @@ in the request
 --------------------------
 */
 async function deleteRole(req, res, next) {
-  return res.send("role is deleted");
+  return res.send("Role is deleted");
 }
 
 /*
@@ -55,13 +55,13 @@ Delete all roles from
 the database.
 --------------------------
 */
-async function deleteAllRole(req, res, next) {
-  return res.send("roles are deleted");
+async function deleteAllRoles(req, res, next) {
+  return res.send("Roles are deleted");
 }
 
 export {
   createRole,
-  deleteAllRole,
+  deleteAllRoles,
   deleteRole,
   getAllRoles,
   getOneRole,
@@ -73,6 +73,6 @@ export default {
   getOneRole,
   getAllRoles,
   updateRole,
-  deleteAllRole,
+  deleteAllRoles,
   deleteRole,
 };
