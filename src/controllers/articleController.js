@@ -7,7 +7,13 @@ the database.
 --------------------------
 */
 async function getOneArticle(req, res, next) {
-  return res.send("One article");
+  try {
+    const { articleId } = req.params;
+    const article = await ArticleModel.findById(articleId);
+    return res.status(200).json(article);
+  } catch (error) {
+    return res.status(500).json({ message: error.message });
+  }
 }
 
 /*
