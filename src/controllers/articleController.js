@@ -1,3 +1,5 @@
+const ArticleModel = require("../models/article.model.js");
+
 /*
 --------------------------
 Retrieve one article from 
@@ -25,7 +27,12 @@ in the database
 --------------------------
 */
 async function createArticle(req, res, next) {
-  return res.send("Article is created");
+  try {
+    const newArticle = await ArticleModel.create(req.body);
+    return res.status(200).json(newArticle);
+  } catch (error) {
+    return res.status(500).json({ message: error.message });
+  }
 }
 
 /*
@@ -59,16 +66,7 @@ async function deleteAllArticles(req, res, next) {
   return res.send("Articles are deleted");
 }
 
-export {
-  createArticle,
-  deleteAllArticles,
-  deleteArticle,
-  getAllArticles,
-  getOneArticle,
-  updateArticle,
-};
-
-export default {
+module.exports = {
   createArticle,
   deleteAllArticles,
   deleteArticle,
