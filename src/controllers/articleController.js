@@ -17,7 +17,12 @@ the database.
 --------------------------
 */
 async function getAllArticles(req, res, next) {
-  return res.send("All articles");
+  try {
+    const articles = await ArticleModel.find({});
+    return res.status(200).json(articles);
+  } catch (error) {
+    return res.status(500).json({ message: error.message });
+  }
 }
 
 /*
