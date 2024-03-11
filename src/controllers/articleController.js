@@ -53,7 +53,17 @@ in the request
 --------------------------
 */
 async function updateArticle(req, res, next) {
-  return res.send("Article is updated");
+  try {
+    const { articleId } = req.params;
+    const article = await ArticleModel.findByIdAndUpdate(articleId, req.body);
+    if (!article) {
+      return res.status(404).json({ message: "Article not found" });
+    }
+    const updatedArticle = await ArticleModel.findById(articleId);
+    return res.status(200).json(updatedArticle);
+  } catch (error) {
+    return res.status(500).json({ message: error.message });
+  }
 }
 
 /*
