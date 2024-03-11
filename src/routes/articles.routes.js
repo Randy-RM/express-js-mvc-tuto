@@ -1,12 +1,12 @@
-import { Router } from "express";
-import {
+const { Router } = require("express");
+const {
   createArticle,
   deleteAllArticles,
   deleteArticle,
   getAllArticles,
   getOneArticle,
   updateArticle,
-} from "../controllers/articleController.js";
+} = require("../controllers/articleController.js");
 
 const articleRouter = Router();
 
@@ -28,4 +28,4 @@ articleRouter.delete(`/delete/:articleId`, deleteArticle);
 //Delete all articles
 articleRouter.delete(`/delete`, deleteAllArticles);
 
-export default articleRouter;
+module.exports = articleRouter;
