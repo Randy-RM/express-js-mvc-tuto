@@ -59,16 +59,7 @@ async function deleteAllRoles(req, res, next) {
   return res.send("Roles are deleted");
 }
 
-export {
-  createRole,
-  deleteAllRoles,
-  deleteRole,
-  getAllRoles,
-  getOneRole,
-  updateRole,
-};
-
-export default {
+module.exports = {
   createRole,
   getOneRole,
   getAllRoles,

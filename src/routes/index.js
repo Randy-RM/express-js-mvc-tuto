@@ -1,4 +1,6 @@
-export { default as articleRouter } from "./articles.routes.js";
-export { default as authRouter } from "./auth.routes.js";
-export { default as roleRouter } from "./roles.routes.js";
-export { default as userRouter } from "./users.routes.js";
+module.exports = {
+  articleRouter: require("./articles.routes.js"),
+  authRouter: require("./auth.routes.js"),
+  roleRouter: require("./roles.routes.js"),
+  userRouter: require("./users.routes.js"),
+};

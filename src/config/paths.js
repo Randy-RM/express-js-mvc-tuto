@@ -1,7 +1,7 @@
-export const authBaseURI = "/api/auth";
-export const usersBaseURI = "/api/user";
-export const rolesBaseURI = "/api/roles";
-export const articlesBaseURI = "/api/articles";
+const authBaseURI = "/api/auth";
+const usersBaseURI = "/api/user";
+const rolesBaseURI = "/api/roles";
+const articlesBaseURI = "/api/articles";
 
 const paths = {
   authBaseURI: authBaseURI,
@@ -10,4 +10,4 @@ const paths = {
   articlesBaseURI: articlesBaseURI,
 };
 
-export default paths;
+module.exports = paths;

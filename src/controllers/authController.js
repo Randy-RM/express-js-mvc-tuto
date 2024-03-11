@@ -54,16 +54,7 @@ async function deleteAccount(req, res, next) {
   return res.send("User account is deleted");
 }
 
-export {
-  activateAccount,
-  deleteAccount,
-  logout,
-  recoverAccount,
-  signin,
-  signup,
-};
-
-export default {
+module.exports = {
   activateAccount,
   deleteAccount,
   logout,

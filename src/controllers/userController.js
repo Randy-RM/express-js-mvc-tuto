@@ -59,16 +59,7 @@ async function deleteAllUsers(req, res, next) {
   return res.send("Users are deleted");
 }
 
-export {
-  createUser,
-  deleteAllUsers,
-  deleteUser,
-  getAllUsers,
-  getOneUser,
-  updateUser,
-};
-
-export default {
+module.exports = {
   createUser,
   deleteAllUsers,
   deleteUser,

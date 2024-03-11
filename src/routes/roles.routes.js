@@ -1,12 +1,12 @@
-import { Router } from "express";
-import {
+const { Router } = require("express");
+const {
   createRole,
   deleteAllRoles,
   deleteRole,
   getAllRoles,
   getOneRole,
   updateRole,
-} from "../controllers/roleController.js";
+} = require("../controllers/roleController.js");
 
 const roleRouter = Router();
 
@@ -28,4 +28,4 @@ roleRouter.delete(`/delete/:roleId`, deleteRole);
 //Delete all roles
 roleRouter.delete(`/delete`, deleteAllRoles);
 
-export default roleRouter;
+module.exports = roleRouter;

@@ -1,12 +1,12 @@
-import { Router } from "express";
-import {
+const { Router } = require("express");
+const {
   activateAccount,
   deleteAccount,
   logout,
   recoverAccount,
   signin,
   signup,
-} from "../controllers/authController.js";
+} = require("../controllers/authController.js");
 
 const authRouter = Router();
 
@@ -22,4 +22,4 @@ authRouter.post("/recover-account", recoverAccount);
 
 authRouter.post("/delete-account", deleteAccount);
 
-export default authRouter;
+module.exports = authRouter;
