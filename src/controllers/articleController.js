@@ -6,7 +6,7 @@ Retrieve one article from
 the database.
 --------------------------
 */
-async function getOneArticle(req, res, next) {
+async function getOneArticle(req, res) {
   try {
     const { articleId } = req.params;
     const article = await ArticleModel.findById(articleId);
@@ -22,7 +22,7 @@ Retrieve all articles from
 the database.
 --------------------------
 */
-async function getAllArticles(req, res, next) {
+async function getAllArticles(req, res) {
   try {
     const articles = await ArticleModel.find({});
     return res.status(200).json(articles);
@@ -37,7 +37,7 @@ Create and save a new article
 in the database
 --------------------------
 */
-async function createArticle(req, res, next) {
+async function createArticle(req, res) {
   try {
     const newArticle = await ArticleModel.create(req.body);
     return res.status(200).json(newArticle);
@@ -52,7 +52,7 @@ Update article by the id
 in the request
 --------------------------
 */
-async function updateArticle(req, res, next) {
+async function updateArticle(req, res) {
   try {
     const { articleId } = req.params;
     const article = await ArticleModel.findByIdAndUpdate(articleId, req.body);
@@ -73,8 +73,17 @@ the specified id
 in the request
 --------------------------
 */
-async function deleteArticle(req, res, next) {
-  return res.send("Article is deleted");
+async function deleteArticle(req, res) {
+  try {
+    const { articleId } = req.params;
+    const article = await ArticleModel.findByIdAndDelete(articleId);
+    if (!article) {
+      return res.status(404).json({ message: "Article not found" });
+    }
+    return res.status(200).json({ message: "Article deleted successfully" });
+  } catch (error) {
+    return res.status(500).json({ message: error.message });
+  }
 }
 
 /*
