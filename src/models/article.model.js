@@ -1,5 +1,5 @@
-const mongoose = require("mongoose");
-const { Schema, model } = mongoose;
+const { Schema } = require("mongoose");
+const dbConnection = require("../config/database");
 
 const ArticleSchema = new Schema(
   {
@@ -17,6 +17,6 @@ const ArticleSchema = new Schema(
   }
 );
 
-const ArticleModel = model("Article", ArticleSchema);
+const ArticleModel = dbConnection.model("Article", ArticleSchema);
 
 module.exports = ArticleModel;
