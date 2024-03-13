@@ -32,7 +32,11 @@ articleRouter.put(
 );
 
 //Delete article by articleId
-articleRouter.delete(`/delete/:articleId`, deleteArticle);
+articleRouter.delete(
+  `/delete/:articleId`,
+  [passport.authenticate("jwt", { session: false })],
+  deleteArticle
+);
 
 //Delete all articles
 articleRouter.delete(`/delete`, deleteAllArticles);
