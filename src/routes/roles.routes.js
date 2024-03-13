@@ -15,7 +15,11 @@ const roleRouter = Router();
 roleRouter.get(`/`, getAllRoles);
 
 //Get one role by roleId
-roleRouter.get(`/:roleId`, getOneRole);
+roleRouter.get(
+  `/:roleId`,
+  [passport.authenticate("jwt", { session: false })],
+  getOneRole
+);
 
 //Create a new role
 roleRouter.post(
