@@ -24,7 +24,11 @@ roleRouter.post(`/add`, createRole);
 roleRouter.put(`/update/:roleId`, updateRole);
 
 //Delete role by roleId
-roleRouter.delete(`/delete/:roleId`, deleteRole);
+roleRouter.delete(
+  `/delete/:roleId`,
+  [passport.authenticate("jwt", { session: false })],
+  deleteRole
+);
 
 //Delete all roles
 roleRouter.delete(
