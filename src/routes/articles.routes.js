@@ -39,6 +39,10 @@ articleRouter.delete(
 );
 
 //Delete all articles
-articleRouter.delete(`/delete`, deleteAllArticles);
+articleRouter.delete(
+  `/delete`,
+  [passport.authenticate("jwt", { session: false })],
+  deleteAllArticles
+);
 
 module.exports = articleRouter;
