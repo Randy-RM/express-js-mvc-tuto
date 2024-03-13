@@ -1,4 +1,5 @@
 const { Router } = require("express");
+const passport = require("passport");
 const {
   createRole,
   deleteAllRoles,
@@ -26,6 +27,10 @@ roleRouter.put(`/update/:roleId`, updateRole);
 roleRouter.delete(`/delete/:roleId`, deleteRole);
 
 //Delete all roles
-roleRouter.delete(`/delete`, deleteAllRoles);
+roleRouter.delete(
+  `/delete`,
+  [passport.authenticate("jwt", { session: false })],
+  deleteAllRoles
+);
 
 module.exports = roleRouter;
