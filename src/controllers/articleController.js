@@ -92,7 +92,7 @@ Delete all articles from
 the database.
 --------------------------
 */
-async function deleteAllArticles(req, res, next) {
+async function deleteAllArticles(req, res) {
   return res.send("Articles are deleted");
 }
 
