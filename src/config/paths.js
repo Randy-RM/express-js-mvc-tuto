@@ -1,5 +1,5 @@
 const authBaseURI = "/api/auth";
-const usersBaseURI = "/api/user";
+const usersBaseURI = "/api/users";
 const rolesBaseURI = "/api/roles";
 const articlesBaseURI = "/api/articles";
 
