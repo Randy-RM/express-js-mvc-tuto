@@ -33,7 +33,11 @@ userRouter.post(
 );
 
 //Update user by userId
-userRouter.put(`/update/:userId`, updateUser);
+userRouter.put(
+  `/update/:userId`,
+  [passport.authenticate("jwt", { session: false })],
+  updateUser
+);
 
 //Delete user by userId
 userRouter.delete(`/delete/:userId`, deleteUser);
