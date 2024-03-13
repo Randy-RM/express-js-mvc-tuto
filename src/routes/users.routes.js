@@ -19,7 +19,11 @@ userRouter.get(
 );
 
 //Get one user by userId
-userRouter.get(`/:userId`, getOneUser);
+userRouter.get(
+  `/:userId`,
+  [passport.authenticate("jwt", { session: false })],
+  getOneUser
+);
 
 //Create a new user
 userRouter.post(`/add`, createUser);
