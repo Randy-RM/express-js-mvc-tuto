@@ -26,7 +26,11 @@ userRouter.get(
 );
 
 //Create a new user
-userRouter.post(`/add`, createUser);
+userRouter.post(
+  `/add`,
+  [passport.authenticate("jwt", { session: false })],
+  createUser
+);
 
 //Update user by userId
 userRouter.put(`/update/:userId`, updateUser);
