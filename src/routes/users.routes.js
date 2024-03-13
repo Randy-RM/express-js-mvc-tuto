@@ -1,4 +1,5 @@
 const { Router } = require("express");
+const passport = require("passport");
 const {
   createUser,
   deleteAllUsers,
@@ -11,7 +12,11 @@ const {
 const userRouter = Router();
 
 //Get all users
-userRouter.get(`/`, getAllUsers);
+userRouter.get(
+  `/`,
+  [passport.authenticate("jwt", { session: false })],
+  getAllUsers
+);
 
 //Get one user by userId
 userRouter.get(`/:userId`, getOneUser);
