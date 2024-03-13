@@ -20,12 +20,16 @@ articleRouter.get(`/:articleId`, getOneArticle);
 //Create a new article
 articleRouter.post(
   `/add`,
-  passport.authenticate("jwt", { session: false }),
+  [passport.authenticate("jwt", { session: false })],
   createArticle
 );
 
 //Update article by articleId
-articleRouter.put(`/update/:articleId`, updateArticle);
+articleRouter.put(
+  `/update/:articleId`,
+  [passport.authenticate("jwt", { session: false })],
+  updateArticle
+);
 
 //Delete article by articleId
 articleRouter.delete(`/delete/:articleId`, deleteArticle);
