@@ -21,7 +21,11 @@ roleRouter.get(`/:roleId`, getOneRole);
 roleRouter.post(`/add`, createRole);
 
 //Update role by roleId
-roleRouter.put(`/update/:roleId`, updateRole);
+roleRouter.put(
+  `/update/:roleId`,
+  [passport.authenticate("jwt", { session: false })],
+  updateRole
+);
 
 //Delete role by roleId
 roleRouter.delete(
