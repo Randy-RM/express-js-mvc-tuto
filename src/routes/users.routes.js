@@ -40,7 +40,11 @@ userRouter.put(
 );
 
 //Delete user by userId
-userRouter.delete(`/delete/:userId`, deleteUser);
+userRouter.delete(
+  `/delete/:userId`,
+  [passport.authenticate("jwt", { session: false })],
+  deleteUser
+);
 
 //Delete all users
 userRouter.delete(`/delete`, deleteAllUsers);
