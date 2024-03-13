@@ -4,7 +4,7 @@ Retrieve one user from
 the database.
 --------------------------
 */
-async function getOneUser(req, res, next) {
+async function getOneUser(req, res) {
   return res.send("One user");
 }
 
@@ -14,7 +14,7 @@ Retrieve all users from
 the database.
 --------------------------
 */
-async function getAllUsers(req, res, next) {
+async function getAllUsers(req, res) {
   return res.send("All users");
 }
 
@@ -24,7 +24,7 @@ Create and save a new user
 in the database
 --------------------------
 */
-async function createUser(req, res, next) {
+async function createUser(req, res) {
   return res.send("User is Created");
 }
 
@@ -34,7 +34,7 @@ Update a user by the id
 in the request
 --------------------------
 */
-async function updateUser(req, res, next) {
+async function updateUser(req, res) {
   return res.send("User is updated");
 }
 
@@ -45,7 +45,7 @@ the specified id
 in the request
 --------------------------
 */
-async function deleteUser(req, res, next) {
+async function deleteUser(req, res) {
   return res.send("User is deleted");
 }
 
@@ -55,7 +55,7 @@ Delete all users from
 the database.
 --------------------------
 */
-async function deleteAllUsers(req, res, next) {
+async function deleteAllUsers(req, res) {
   return res.send("Users are deleted");
 }
 
