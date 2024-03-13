@@ -1,4 +1,5 @@
 const { Router } = require("express");
+const passport = require("passport");
 const {
   createArticle,
   deleteAllArticles,
@@ -17,7 +18,11 @@ articleRouter.get(`/`, getAllArticles);
 articleRouter.get(`/:articleId`, getOneArticle);
 
 //Create a new article
-articleRouter.post(`/add`, createArticle);
+articleRouter.post(
+  `/add`,
+  passport.authenticate("jwt", { session: false }),
+  createArticle
+);
 
 //Update article by articleId
 articleRouter.put(`/update/:articleId`, updateArticle);
