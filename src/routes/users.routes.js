@@ -47,6 +47,10 @@ userRouter.delete(
 );
 
 //Delete all users
-userRouter.delete(`/delete`, deleteAllUsers);
+userRouter.delete(
+  `/delete`,
+  [passport.authenticate("jwt", { session: false })],
+  deleteAllUsers
+);
 
 module.exports = userRouter;
