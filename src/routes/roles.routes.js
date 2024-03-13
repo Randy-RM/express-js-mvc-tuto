@@ -18,7 +18,11 @@ roleRouter.get(`/`, getAllRoles);
 roleRouter.get(`/:roleId`, getOneRole);
 
 //Create a new role
-roleRouter.post(`/add`, createRole);
+roleRouter.post(
+  `/add`,
+  [passport.authenticate("jwt", { session: false })],
+  createRole
+);
 
 //Update role by roleId
 roleRouter.put(
