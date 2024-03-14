@@ -10,7 +10,9 @@ const opts = {
 module.exports = (passport) => {
   passport.use(
     new JwtStrategy(opts, async (jwt_payload, done) => {
-      const user = await UserModel.findOne({ email: jwt_payload.email });
+      const user = await UserModel.findOne({
+        email: jwt_payload.email,
+      }).populate("role");
 
       if (user) {
         return done(null, user);
