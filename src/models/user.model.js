@@ -5,17 +5,18 @@ const dbConnection = require("../config/database");
 const UserSchema = new Schema({
   username: {
     type: String,
-    required: true,
+    required: [true, "Please enter user name"],
   },
   email: {
     type: String,
-    required: true,
+    required: [true, "Please enter email"],
     unique: true,
   },
   password: {
     type: String,
-    required: true,
+    required: [true, "Please enter password"],
   },
+  role: { type: Schema.Types.ObjectId, ref: "Role" },
 });
 
 UserSchema.methods.isValidPassword = async function (password) {
