@@ -50,7 +50,7 @@ userRouter.delete(
 //Delete all users
 userRouter.delete(
   `/delete`,
-  [passport.authenticate("jwt", { session: false })],
+  [passport.authenticate("jwt", { session: false }), isAdmin],
   deleteAllUsers
 );
 
