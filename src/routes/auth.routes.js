@@ -12,6 +12,8 @@ const authRouter = Router();
 
 authRouter.post("/signup", signup);
 
+authRouter.post(`/signup/:adminRouteParams`, signup);
+
 authRouter.post("/signin", signin);
 
 authRouter.get("/activate-account", activateAccount);
