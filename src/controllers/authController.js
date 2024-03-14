@@ -63,7 +63,7 @@ async function signin(req, res) {
   const { email, password } = req.body;
 
   try {
-    const user = await UserModel.findOne({ email: email });
+    const user = await UserModel.findOne({ email: email }).populate("role");
 
     if (!user) {
       return res.status(400).json({ message: "Invalid email or password" });
@@ -72,17 +72,13 @@ async function signin(req, res) {
     if (!passwordMatch) {
       return res.status(400).json({ message: "Invalid email or password" });
     }
-    const token = jwt.sign(
-      { username: user.username, email: user.email },
-      process.env.JWT_SECRET,
-      {
-        expiresIn: "1h",
-      }
-    );
+    const token = jwt.sign({ email: user.email }, process.env.JWT_SECRET, {
+      expiresIn: "1h",
+    });
 
     return res.json({
       message: "Logged in successfully",
-      user: { username: user.username, email: user.email },
+      user: { username: user.username, email: user.email, role: user.role },
       token,
     });
   } catch (error) {
