@@ -19,7 +19,7 @@ const UserSchema = new Schema({
   role: { type: Schema.Types.ObjectId, ref: "Role" },
 });
 
-UserSchema.methods.isValidPassword = async function (password) {
+UserSchema.methods.isUserPassword = async function (password) {
   const user = this;
   const compare = await bcrypt.compare(password, user.password);
   return compare;

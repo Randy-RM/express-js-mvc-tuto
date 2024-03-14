@@ -58,7 +58,7 @@ async function signin(req, res) {
     if (!user) {
       return res.status(400).json({ message: "Invalid email or password" });
     }
-    const passwordMatch = await user.isValidPassword(password);
+    const passwordMatch = await user.isUserPassword(password);
     if (!passwordMatch) {
       return res.status(400).json({ message: "Invalid email or password" });
     }
