@@ -8,13 +8,14 @@ const {
   getOneUser,
   updateUser,
 } = require("../controllers/userController.js");
+const { isAdmin } = require("../middlewares/auth.middleware.js");
 
 const userRouter = Router();
 
 //Get all users
 userRouter.get(
   `/`,
-  [passport.authenticate("jwt", { session: false })],
+  [passport.authenticate("jwt", { session: false }), isAdmin],
   getAllUsers
 );
 
