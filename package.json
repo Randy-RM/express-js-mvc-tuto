@@ -7,7 +7,8 @@
   "license": "MIT",
   "scripts": {
     "dev": "nodemon ./src/index.js",
-    "prod": "node ./src/index.js"
+    "prod": "node ./src/index.js",
+    "seed": "node ./src/seeders/role.seeders.js"
   },
   "dependencies": {
     "bcrypt": "^5.1.1",
