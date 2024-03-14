@@ -43,7 +43,7 @@ userRouter.put(
 //Delete user by userId
 userRouter.delete(
   `/delete/:userId`,
-  [passport.authenticate("jwt", { session: false })],
+  [passport.authenticate("jwt", { session: false }), isAdmin],
   deleteUser
 );
 
