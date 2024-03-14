@@ -29,7 +29,7 @@ userRouter.get(
 //Create a new user
 userRouter.post(
   `/add`,
-  [passport.authenticate("jwt", { session: false })],
+  [passport.authenticate("jwt", { session: false }), isAdmin],
   createUser
 );
 
