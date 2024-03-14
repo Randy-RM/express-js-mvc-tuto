@@ -1,6 +1,7 @@
 const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
 const UserModel = require("../models/user.model.js");
+const RoleModel = require("../models/role.model.js");
 
 /*
 --------------------------
@@ -9,15 +10,24 @@ in the database
 --------------------------
 */
 async function signup(req, res) {
+  const { adminRouteParams } = req.params;
   const { username, email, password } = req.body;
-
-  const user = new UserModel({
-    username: username,
-    email: email,
-    password: await bcrypt.hash(password, 10),
-  });
+  let role =
+    adminRouteParams &&
+    adminRouteParams === process.env.ADMIN_SECRET_SIGNUP_PARAMS_ROUTE
+      ? { roleName: "admin" }
+      : { roleName: "user" };
 
   try {
+    const userRole = await RoleModel.findOne(role);
+
+    const user = new UserModel({
+      username: username,
+      email: email,
+      password: await bcrypt.hash(password, 10),
+      role: userRole ? userRole : null,
+    });
+
     const newUser = await user
       .save()
       .then((user) => user)
