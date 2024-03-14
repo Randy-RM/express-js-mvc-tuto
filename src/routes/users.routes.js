@@ -22,7 +22,7 @@ userRouter.get(
 //Get one user by userId
 userRouter.get(
   `/:userId`,
-  [passport.authenticate("jwt", { session: false })],
+  [passport.authenticate("jwt", { session: false }), isAdmin],
   getOneUser
 );
 
