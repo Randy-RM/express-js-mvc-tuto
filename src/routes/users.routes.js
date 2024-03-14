@@ -36,7 +36,7 @@ userRouter.post(
 //Update user by userId
 userRouter.put(
   `/update/:userId`,
-  [passport.authenticate("jwt", { session: false })],
+  [passport.authenticate("jwt", { session: false }), isAdmin],
   updateUser
 );
 
