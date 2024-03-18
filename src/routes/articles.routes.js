@@ -35,7 +35,7 @@ articleRouter.put(
 //Delete article by articleId
 articleRouter.delete(
   `/delete/:articleId`,
-  [passport.authenticate("jwt", { session: false })],
+  [passport.authenticate("jwt", { session: false }), isAuthorOrAdmin],
   deleteArticle
 );
 
