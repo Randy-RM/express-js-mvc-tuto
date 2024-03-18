@@ -8,10 +8,10 @@ const passport = require("passport");
 const dbConnection = require("./config/database");
 
 const {
-  articlesBaseURI,
+  articleBaseURI,
   authBaseURI,
-  rolesBaseURI,
-  usersBaseURI,
+  roleBaseURI,
+  userBaseURI,
 } = require("./config/paths");
 const {
   articleRouter,
@@ -54,7 +54,9 @@ app.use(
     saveUninitialized: true,
     store: sessionStore,
     cookie: {
-      maxAge: 1000 * 60 * 60 * 24, // Equals 1 day (1 day * 24 hr/1 day * 60 min/1 hr * 60 sec/1 min * 1000 ms / 1 sec)
+      // Equals 1 day
+      // (1 day * 24 hr/1 day * 60 min/1 hr * 60 sec/1 min * 1000 ms / 1 sec)
+      maxAge: 1000 * 60 * 60 * 24,
     },
   })
 );
@@ -62,7 +64,8 @@ app.use(
 /**
  * -------------- PASSPORT AUTHENTICATION ----------------
  */
-// Need to require the entire Passport config module so app.js knows about it
+// Need to require the entire Passport config
+// module so index.js knows about it
 require("./config/passport")(passport);
 
 app.use(passport.initialize());
@@ -77,9 +80,9 @@ app.use((req, res, next) => {
  * -------------- ROUTE ----------------
  */
 app.use(authBaseURI, authRouter);
-app.use(rolesBaseURI, roleRouter);
-app.use(usersBaseURI, userRouter);
-app.use(articlesBaseURI, articleRouter);
+app.use(roleBaseURI, roleRouter);
+app.use(userBaseURI, userRouter);
+app.use(articleBaseURI, articleRouter);
 
 /**
  * -------------- RUN SERVER ----------------
