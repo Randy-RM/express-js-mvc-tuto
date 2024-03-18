@@ -11,6 +11,11 @@ const ArticleSchema = new Schema(
       type: String,
       required: [true, "Please enter content"],
     },
+    user: {
+      type: Schema.Types.ObjectId,
+      ref: "User",
+      required: [true, "User is required for article"],
+    },
   },
   {
     timestamps: true,
