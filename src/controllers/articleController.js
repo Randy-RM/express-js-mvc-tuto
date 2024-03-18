@@ -1,4 +1,4 @@
-const ArticleModel = require("../models/article.model.js");
+const { ArticleModel, UserModel } = require("../models/index.js");
 
 /*
 --------------------------
@@ -38,8 +38,13 @@ in the database
 --------------------------
 */
 async function createArticle(req, res) {
+  const { id } = req.user;
   try {
-    const newArticle = await ArticleModel.create(req.body);
+    const user = await UserModel.findById(id);
+    const newArticle = await ArticleModel.create({
+      ...req.body,
+      user: user,
+    });
     return res.status(200).json(newArticle);
   } catch (error) {
     return res.status(500).json({ message: error.message });
