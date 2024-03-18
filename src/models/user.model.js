@@ -25,6 +25,6 @@ UserSchema.methods.isUserPassword = async function (password) {
   return compare;
 };
 
-const UserModel = dbConnection.model("user", UserSchema);
+const UserModel = dbConnection.model("User", UserSchema);
 
 module.exports = UserModel;
