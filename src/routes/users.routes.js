@@ -14,7 +14,7 @@ const userRouter = Router();
 
 //Get all users
 userRouter.get(
-  `/`,
+  `/all`,
   [passport.authenticate("jwt", { session: false }), isAdmin],
   getAllUsers
 );
