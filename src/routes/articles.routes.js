@@ -8,7 +8,10 @@ const {
   getOneArticle,
   updateArticle,
 } = require("../controllers/articleController.js");
-const { isAuthorOrAdmin } = require("../middlewares/auth.middleware.js");
+const {
+  isAdmin,
+  isAuthorOrAdmin,
+} = require("../middlewares/auth.middleware.js");
 
 const articleRouter = Router();
 
@@ -42,7 +45,7 @@ articleRouter.delete(
 //Delete all articles
 articleRouter.delete(
   `/delete`,
-  [passport.authenticate("jwt", { session: false })],
+  [passport.authenticate("jwt", { session: false }), isAdmin],
   deleteAllArticles
 );
 
