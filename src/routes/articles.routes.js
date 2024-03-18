@@ -12,7 +12,7 @@ const {
 const articleRouter = Router();
 
 //Get all articles
-articleRouter.get(`/`, getAllArticles);
+articleRouter.get(`/all`, getAllArticles);
 
 //Get one article by articleId
 articleRouter.get(`/:articleId`, getOneArticle);
