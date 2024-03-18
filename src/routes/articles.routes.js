@@ -28,7 +28,7 @@ articleRouter.post(
 //Update article by articleId
 articleRouter.put(
   `/update/:articleId`,
-  [passport.authenticate("jwt", { session: false })],
+  [passport.authenticate("jwt", { session: false }), isAuthorOrAdmin],
   updateArticle
 );
 
