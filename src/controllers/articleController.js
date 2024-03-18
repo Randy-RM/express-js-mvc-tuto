@@ -60,9 +60,17 @@ in the request
 async function updateArticle(req, res) {
   try {
     const { articleId } = req.params;
+    const { id, role } = req.user;
     const article = await ArticleModel.findByIdAndUpdate(articleId, req.body);
     if (!article) {
       return res.status(404).json({ message: "Article not found" });
+    }
+    if (article.user != id) {
+      if (role.roleName != "admin") {
+        return res
+          .status(401)
+          .json({ message: "Unauthorized to modify resource" });
+      }
     }
     const updatedArticle = await ArticleModel.findById(articleId);
     return res.status(200).json(updatedArticle);
