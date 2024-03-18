@@ -5,9 +5,9 @@ const articleBaseURI = "/api/article";
 
 const paths = {
   authBaseURI: authBaseURI,
-  usersBaseURI: userBaseURI,
-  rolesBaseURI: roleBaseURI,
-  articlesBaseURI: articleBaseURI,
+  userBaseURI: userBaseURI,
+  roleBaseURI: roleBaseURI,
+  articleBaseURI: articleBaseURI,
 };
 
 module.exports = paths;
