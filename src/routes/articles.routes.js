@@ -8,6 +8,7 @@ const {
   getOneArticle,
   updateArticle,
 } = require("../controllers/articleController.js");
+const { isAuthorOrAdmin } = require("../middlewares/auth.middleware.js");
 
 const articleRouter = Router();
 
@@ -20,7 +21,7 @@ articleRouter.get(`/:articleId`, getOneArticle);
 //Create a new article
 articleRouter.post(
   `/add`,
-  [passport.authenticate("jwt", { session: false })],
+  [passport.authenticate("jwt", { session: false }), isAuthorOrAdmin],
   createArticle
 );
 
