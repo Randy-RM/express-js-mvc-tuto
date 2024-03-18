@@ -13,7 +13,7 @@ const roleRouter = Router();
 
 //Get all roles
 roleRouter.get(
-  `/`,
+  `/all`,
   [passport.authenticate("jwt", { session: false })],
   getAllRoles
 );
