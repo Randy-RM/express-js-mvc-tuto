@@ -1,4 +1,5 @@
 const { ArticleModel, UserModel } = require("../models/index.js");
+const { isUserAuthorizedToModifyResource } = require("../utils/index.js");
 
 /*
 --------------------------
@@ -65,13 +66,18 @@ async function updateArticle(req, res) {
     if (!article) {
       return res.status(404).json({ message: "Article not found" });
     }
-    if (article.user != id) {
-      if (role.roleName != "admin") {
-        return res
-          .status(401)
-          .json({ message: "Unauthorized to modify resource" });
-      }
+    if (
+      !isUserAuthorizedToModifyResource({
+        userIdInResource: article.user,
+        logedUserId: id,
+        logedUserRoleName: role.roleName,
+      })
+    ) {
+      return res
+        .status(401)
+        .json({ message: "Unauthorized to modify resource" });
     }
+
     const updatedArticle = await ArticleModel.findById(articleId);
     return res.status(200).json(updatedArticle);
   } catch (error) {
