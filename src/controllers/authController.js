@@ -75,6 +75,15 @@ async function signin(req, res) {
       expiresIn: "1h",
     });
 
+    // Add your authenticated property below:
+    req.session.authenticated = true;
+    // Add the user object below:
+    req.session.user = {
+      email: user.email,
+      username: user.username,
+      role: user.role,
+    };
+
     return res.json({
       message: "Logged in successfully",
       user: { username: user.username, email: user.email, role: user.role },
@@ -91,7 +100,12 @@ Logout if user is logged
 --------------------------
 */
 async function logout(req, res) {
-  return res.send("User is logout");
+  req.logout(function (error) {
+    if (error) {
+      return res.status(500).json({ message: error.message });
+    }
+    return res.send("User is logout");
+  });
 }
 
 /*
