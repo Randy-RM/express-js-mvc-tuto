@@ -66,7 +66,7 @@ app.use(
  */
 // Need to require the entire Passport config
 // module so index.js knows about it
-require("./config/passport")(passport);
+require("./config/passport.config")(passport);
 
 app.use(passport.initialize());
 app.use(passport.session());
