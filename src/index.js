@@ -12,7 +12,7 @@ const {
   authBaseURI,
   roleBaseURI,
   userBaseURI,
-} = require("./config/paths");
+} = require("./config/paths.config");
 const {
   articleRouter,
   authRouter,
