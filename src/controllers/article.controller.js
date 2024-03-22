@@ -95,10 +95,27 @@ in the request
 async function deleteArticle(req, res) {
   try {
     const { articleId } = req.params;
-    const article = await ArticleModel.findByIdAndDelete(articleId);
-    if (!article) {
+    const { id, role } = req.user;
+
+    const article = await ArticleModel.findById(articleId);
+    if (
+      article &&
+      !isUserAuthorizedToModifyResource({
+        userIdInResource: article.user,
+        logedUserId: id,
+        logedUserRoleName: role.roleName,
+      })
+    ) {
+      return res
+        .status(401)
+        .json({ message: "Unauthorized to modify resource" });
+    }
+
+    const deletedArticle = await ArticleModel.findByIdAndDelete(articleId);
+    if (!deletedArticle) {
       return res.status(404).json({ message: "Article not found" });
     }
+
     return res.status(200).json({ message: "Article deleted successfully" });
   } catch (error) {
     return res.status(500).json({ message: error.message });
