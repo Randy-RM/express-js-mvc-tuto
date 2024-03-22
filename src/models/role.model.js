@@ -1,5 +1,5 @@
 const { Schema } = require("mongoose");
-const dbConnection = require("../config/database");
+const dbConnection = require("../config/database.config");
 
 const RoleSchema = new Schema(
   {

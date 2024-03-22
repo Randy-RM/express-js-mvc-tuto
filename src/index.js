@@ -5,7 +5,7 @@ const express = require("express");
 const MongoStore = require("connect-mongo");
 const session = require("express-session");
 const passport = require("passport");
-const dbConnection = require("./config/database");
+const dbConnection = require("./config/database.config");
 
 const {
   articleBaseURI,

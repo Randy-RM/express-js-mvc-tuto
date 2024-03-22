@@ -1,6 +1,6 @@
 const bcrypt = require("bcrypt");
 const { Schema } = require("mongoose");
-const dbConnection = require("../config/database");
+const dbConnection = require("../config/database.config");
 
 const UserSchema = new Schema({
   username: {
