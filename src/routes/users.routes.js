@@ -7,7 +7,7 @@ const {
   getAllUsers,
   getOneUser,
   updateUser,
-} = require("../controllers/userController.js");
+} = require("../controllers/user.controller.js");
 const { isAdmin } = require("../middlewares/auth.middleware.js");
 
 const userRouter = Router();
