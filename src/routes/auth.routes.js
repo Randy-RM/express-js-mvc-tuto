@@ -6,7 +6,7 @@ const {
   recoverAccount,
   signin,
   signup,
-} = require("../controllers/authController.js");
+} = require("../controllers/auth.controller.js");
 
 const authRouter = Router();
 
