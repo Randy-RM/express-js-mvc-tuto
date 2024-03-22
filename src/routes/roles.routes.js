@@ -7,7 +7,7 @@ const {
   getAllRoles,
   getOneRole,
   updateRole,
-} = require("../controllers/roleController.js");
+} = require("../controllers/role.controller.js");
 
 const roleRouter = Router();
 
