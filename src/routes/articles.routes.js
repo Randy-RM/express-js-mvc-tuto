@@ -7,7 +7,7 @@ const {
   getAllArticles,
   getOneArticle,
   updateArticle,
-} = require("../controllers/articleController.js");
+} = require("../controllers/article.controller.js");
 const {
   isAdmin,
   isAuthorOrAdmin,
