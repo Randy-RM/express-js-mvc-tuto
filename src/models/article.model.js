@@ -11,6 +11,11 @@ const ArticleSchema = new Schema(
       type: String,
       required: [true, "Please enter content"],
     },
+    isPublished: {
+      type: Boolean,
+      default: false,
+    },
+    isArchived: { type: Boolean, default: false },
     user: {
       type: Schema.Types.ObjectId,
       ref: "User",
