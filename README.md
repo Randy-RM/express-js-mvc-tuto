@@ -4,6 +4,8 @@
 
 This project has been set up to help those who are new to **BackEnd** programming with **Javascript** in a **Node Js** environment. It has been organized following a few best practices such as the **MVC** design pattern, the **Camel case** naming convention, etc...
 
+### Note
+
 > This application is a simple blog API with role-based authentication.
 
 ## Overview of main technologies used
@@ -22,7 +24,7 @@ This project has been set up to help those who are new to **BackEnd** programmin
 5.  Return to the previously opened terminal and type command `yarn seed`
 6.  Launch the project in **Dev mode** by typing the command `yarn dev`
 
-## Note
+### Note
 
 > You can use this project as a basis exemple for getting started your backEnd
 > projects with Node Js & Express Js
