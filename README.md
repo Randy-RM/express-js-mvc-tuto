@@ -1,12 +1,14 @@
-# Welcome to this Node JS backend project
+# Welcome to this Node JS & Express Js backend project
 
 <img src="https://media.giphy.com/media/hvRJCLFzcasrR4ia7z/giphy.gif" width="28"><img src="https://emojis.slackmojis.com/emojis/images/1531849430/4246/blob-sunglasses.gif?1531849430" width="28"/>
 
 This project has been set up to help those who are new to **BackEnd** programming with **Javascript** in a **Node Js** environment. It has been organized following a few best practices such as the **MVC** design pattern, the **Camel case** naming convention, etc...
 
+> This application is a simple blog API with role-based authentication.
+
 ## Overview of main technologies used
 
-- **Express Js** : It's a Node Js Framework that helps us quickly set up an api. [Express Js Doc](https://expressjs.com/)
+- **Express Js** : It's a Node Js Framework that helps us quickly set up an **API**. [Express Js Doc](https://expressjs.com/)
 - **MongoDB** : This is our document-oriented NoSql database.
 - **Passport Js** : It's our authentication middleware that integrates easily with Express Js. [Passport Js Doc](https://www.passportjs.org/)
 - **Mongoose** : It's our middleware that makes it easy to manipulate entities in a database. [Mongoose Js Doc](https://mongoosejs.com/)
