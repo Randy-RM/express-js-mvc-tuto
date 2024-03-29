@@ -1,3 +1,5 @@
+const { UserModel } = require("../models/index.js");
+
 /*
 --------------------------
 Retrieve one user from 
@@ -15,7 +17,12 @@ the database.
 --------------------------
 */
 async function getAllUsers(req, res) {
-  return res.send("All users");
+  try {
+    const users = await UserModel.find({}).populate("role");
+    return res.status(200).json(users);
+  } catch (error) {
+    return res.status(500).json({ message: error.message });
+  }
 }
 
 /*
