@@ -1,4 +1,5 @@
-const { UserModel } = require("../models/index.js");
+const bcrypt = require("bcrypt");
+const { UserModel, RoleModel } = require("../models/index.js");
 
 /*
 --------------------------
@@ -38,7 +39,31 @@ in the database
 --------------------------
 */
 async function createUser(req, res) {
-  return res.send("User is Created");
+  const { username, email, password } = req.body;
+  try {
+    const userRole = await RoleModel.findOne({ roleName: "author" });
+
+    const user = new UserModel({
+      username: username,
+      email: email,
+      password: await bcrypt.hash(password, 10),
+      role: userRole ? userRole : null,
+    });
+
+    const newUser = await user
+      .save()
+      .then((user) => user)
+      .catch((error) => {
+        return { error: error.message };
+      });
+
+    if (newUser.error) {
+      throw new Error(newUser.error);
+    }
+    return res.status(201).json({ message: "User is created", data: newUser });
+  } catch (error) {
+    return res.status(500).json({ message: error.message });
+  }
 }
 
 /*
