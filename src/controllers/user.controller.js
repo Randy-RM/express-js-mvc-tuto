@@ -7,7 +7,13 @@ the database.
 --------------------------
 */
 async function getOneUser(req, res) {
-  return res.send("One user");
+  try {
+    const { userId } = req.params;
+    const user = await UserModel.findById(userId).populate("role");
+    return res.status(200).json(user);
+  } catch (error) {
+    return res.status(500).json({ message: error.message });
+  }
 }
 
 /*
