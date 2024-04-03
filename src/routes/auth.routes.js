@@ -10,18 +10,25 @@ const {
 
 const authRouter = Router();
 
+// Create and save a new user account.
 authRouter.post("/signup", signup);
 
+// Create and save a new admin account.
 authRouter.post(`/signup/:adminRouteParams`, signup);
 
-authRouter.post("/signin", signin);
-
+// Verify and confirm user account.
 authRouter.get("/activate-account/:uniqueString", activateAccount);
 
-authRouter.get("/logout", logout);
+// Signin if user have an account.
+authRouter.post("/signin", signin);
 
+// Recover account if user have one.
 authRouter.post("/recover-account", recoverAccount);
 
+// Logout user.
+authRouter.get("/logout", logout);
+
+// Delete user account
 authRouter.post("/delete-account", deleteAccount);
 
 module.exports = authRouter;
