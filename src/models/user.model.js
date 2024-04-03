@@ -16,6 +16,13 @@ const UserSchema = new Schema({
     type: String,
     required: [true, "Please enter password"],
   },
+  isUserActive: {
+    type: Boolean,
+    default: false,
+  },
+  uniqueString: {
+    type: String,
+  },
   role: { type: Schema.Types.ObjectId, ref: "Role" },
 });
 
