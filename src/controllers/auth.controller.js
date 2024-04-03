@@ -1,7 +1,10 @@
 const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
 const { RoleModel, UserModel } = require("../models/index.js");
-const { randomStringGenerator } = require("../utils/index.js");
+const {
+  randomStringGenerator,
+  sendAccountActivationEmail,
+} = require("../utils/index.js");
 
 /*
 --------------------------
