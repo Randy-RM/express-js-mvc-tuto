@@ -28,6 +28,7 @@ async function signup(req, res) {
       username: username,
       email: email,
       password: await bcrypt.hash(password, 10),
+      uniqueString: randomStringGenerator(),
       role: userRole ? userRole : null,
     });
 
@@ -41,6 +42,16 @@ async function signup(req, res) {
     if (newUser.error) {
       throw new Error(newUser.error);
     }
+    // send mail to user
+    const accountActivationEmail = sendAccountActivationEmail(
+      newUser.email,
+      newUser.uniqueString
+    );
+
+    if (!accountActivationEmail.status) {
+      throw new Error(accountActivationEmail.data);
+    }
+
     return res.status(201).json({ message: "User is created", data: newUser });
   } catch (error) {
     return res.status(500).json({ message: error.message });
