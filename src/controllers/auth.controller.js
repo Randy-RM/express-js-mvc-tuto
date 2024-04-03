@@ -15,6 +15,7 @@ in the database
 async function signup(req, res) {
   const { adminRouteParams } = req.params;
   const { username, email, password } = req.body;
+  const apiHostDomain = req.headers.host;
   let role =
     adminRouteParams &&
     adminRouteParams === process.env.ADMIN_SECRET_SIGNUP_PARAMS_ROUTE
@@ -43,14 +44,11 @@ async function signup(req, res) {
       throw new Error(newUser.error);
     }
     // send mail to user
-    const accountActivationEmail = sendAccountActivationEmail(
+    sendAccountActivationEmail(
       newUser.email,
-      newUser.uniqueString
+      newUser.uniqueString,
+      apiHostDomain
     );
-
-    if (!accountActivationEmail.status) {
-      throw new Error(accountActivationEmail.data);
-    }
 
     return res.status(201).json({ message: "User is created", data: newUser });
   } catch (error) {
@@ -63,8 +61,26 @@ async function signup(req, res) {
 Activate user account
 --------------------------
 */
-function activateAccount(req, res) {
-  return res.send("User account is activated");
+async function activateAccount(req, res) {
+  // getting the string
+  const { uniqueString } = req.params;
+  const filter = { uniqueString: uniqueString };
+  const update = { isUserActive: true };
+
+  try {
+    // check is there is anyone with this string and update
+    const user = await UserModel.findOneAndUpdate(filter, update, {
+      returnOriginal: false,
+    });
+    if (!user) {
+      throw new Error("problems arising from verification");
+    }
+    console.log("User account is activated");
+    return res.json({ message: "User account is activated" });
+    // return res.redirect(`${process.env.CLIENT_HOST}${process.env.CLIENT_VERIFY}`);
+  } catch (error) {
+    return res.status(500).json({ message: ` ${error}` });
+  }
 }
 
 /*
