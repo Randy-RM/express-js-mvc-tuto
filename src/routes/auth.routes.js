@@ -16,7 +16,7 @@ authRouter.post(`/signup/:adminRouteParams`, signup);
 
 authRouter.post("/signin", signin);
 
-authRouter.get("/activate-account", activateAccount);
+authRouter.get("/activate-account/:uniqueString", activateAccount);
 
 authRouter.get("/logout", logout);
 
