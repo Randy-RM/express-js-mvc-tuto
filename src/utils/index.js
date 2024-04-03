@@ -1,4 +1,5 @@
 const nodemailer = require("nodemailer");
+const { authBaseURI, activateAccountURI } = require("../config/paths.config");
 
 function isUserAuthorizedToModifyResource({
   userIdInResource,
@@ -23,7 +24,7 @@ function randomStringGenerator() {
   return randomString;
 }
 
-function sendAccountActivationEmail(email, uniqueString) {
+async function sendAccountActivationEmail(email, uniqueString, apiHostDomain) {
   // on production env get this kind of config
   // const transport = nodemailer.createTransport({
   //   service: 'Gmail',
@@ -43,16 +44,14 @@ function sendAccountActivationEmail(email, uniqueString) {
     from: sender,
     to: email,
     subject: "Email confirmation",
-    html: `Press <a href='${process.env.API_VERIFY}${uniqueString}'>Here</a> to verify your email.`,
+    html: `Press <a href='http://${apiHostDomain}${authBaseURI}${activateAccountURI}/${uniqueString}'>Here</a> to verify your email.`,
   };
 
   transport.sendMail(mailOptions, (error, response) => {
     if (error) {
       console.log(error);
-      return { status: false, data: error };
     } else {
       console.log("Message sent");
-      return { status: true, data: response };
     }
   });
 }
