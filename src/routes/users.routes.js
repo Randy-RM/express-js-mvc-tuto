@@ -14,7 +14,7 @@ const userRouter = Router();
 
 //Get all users
 userRouter.get(
-  `/all`,
+  `/`,
   [passport.authenticate("jwt", { session: false }), isAdmin],
   getAllUsers
 );
@@ -28,28 +28,28 @@ userRouter.get(
 
 //Create a new user
 userRouter.post(
-  `/add`,
+  `/`,
   [passport.authenticate("jwt", { session: false }), isAdmin],
   createUser
 );
 
 //Update user by userId
 userRouter.put(
-  `/update/:userId`,
+  `/:userId`,
   [passport.authenticate("jwt", { session: false }), isAdmin],
   updateUser
 );
 
 //Delete user by userId
 userRouter.delete(
-  `/delete/:userId`,
+  `/:userId`,
   [passport.authenticate("jwt", { session: false }), isAdmin],
   deleteUser
 );
 
 //Delete all users
 userRouter.delete(
-  `/delete`,
+  `/`,
   [passport.authenticate("jwt", { session: false }), isAdmin],
   deleteAllUsers
 );
