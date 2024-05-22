@@ -57,11 +57,14 @@ app.get("/", (req, res, next) => {
 /**
  * -------------- RUN SERVER ----------------
  */
-if (dbConnection) {
+dbConnection.once("open", () => {
   console.log("Successful connection to DB");
   app.listen(PORT, () => {
-    console.log(`The server listens on http://localhost:${PORT}`);
+    console.log(`Server listen on http://localhost:${PORT}`);
   });
-} else {
-  console.log("DB connection error");
-}
+});
+
+dbConnection.on("error", (error) => {
+  console.log("DB connection error : ", error);
+  console.log(`Server can't listen on http://localhost:${PORT}`);
+});
