@@ -102,23 +102,20 @@ async function signin(req, res) {
     if (!passwordMatch) {
       return res.status(400).json({ message: "Invalid password" });
     }
-    const token = jwt.sign({ email: user.email }, process.env.JWT_SECRET, {
-      expiresIn: "1h",
-    });
-
-    // Add your authenticated property below:
-    req.session.authenticated = true;
-    // Add the user object below:
-    req.session.user = {
-      email: user.email,
-      username: user.username,
-      role: user.role,
-    };
+    const token = jwt.sign(
+      { email: user.email, userRole: user.role.roleName },
+      process.env.JWT_SECRET,
+      {
+        expiresIn: "1h",
+      }
+    );
 
     return res.json({
       message: "Logged in successfully",
-      user: { username: user.username, email: user.email, role: user.role },
-      token,
+      data: {
+        user: { username: user.username, email: user.email },
+        token: token,
+      },
     });
   } catch (error) {
     return res.status(500).json({ message: error.message });
