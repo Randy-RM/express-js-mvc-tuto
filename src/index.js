@@ -35,6 +35,7 @@ app.use((req, res, next) => {
   );
   next();
 });
+
 /**
  * -------------- PASSPORT AUTHENTICATION ----------------
  */
@@ -51,7 +52,7 @@ app.use(roleBaseURI, roleRouter);
 app.use(userBaseURI, userRouter);
 app.use(articleBaseURI, articleRouter);
 app.get("/", (req, res, next) => {
-  return res.json({ message: "Welcome to MernBlog API" });
+  return res.json({ message: "Welcome to Express MVC Tuto API" });
 });
 
 /**
