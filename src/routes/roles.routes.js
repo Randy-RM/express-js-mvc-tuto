@@ -13,7 +13,7 @@ const roleRouter = Router();
 
 //Get all roles
 roleRouter.get(
-  `/all`,
+  `/`,
   [passport.authenticate("jwt", { session: false })],
   getAllRoles
 );
@@ -27,28 +27,28 @@ roleRouter.get(
 
 //Create a new role
 roleRouter.post(
-  `/add`,
+  `/`,
   [passport.authenticate("jwt", { session: false })],
   createRole
 );
 
 //Update role by roleId
 roleRouter.put(
-  `/update/:roleId`,
+  `/:roleId`,
   [passport.authenticate("jwt", { session: false })],
   updateRole
 );
 
 //Delete role by roleId
 roleRouter.delete(
-  `/delete/:roleId`,
+  `/:roleId`,
   [passport.authenticate("jwt", { session: false })],
   deleteRole
 );
 
 //Delete all roles
 roleRouter.delete(
-  `/delete`,
+  `/`,
   [passport.authenticate("jwt", { session: false })],
   deleteAllRoles
 );
