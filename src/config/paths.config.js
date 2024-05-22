@@ -1,7 +1,7 @@
-const authBaseURI = "/api/auth";
-const userBaseURI = "/api/user";
-const roleBaseURI = "/api/role";
-const articleBaseURI = "/api/article";
+const authBaseURI = "/auth";
+const userBaseURI = "/users";
+const roleBaseURI = "/roles";
+const articleBaseURI = "/articles";
 const activateAccountURI = "/activate-account";
 
 const paths = {
