@@ -25,19 +25,22 @@ function randomStringGenerator() {
 }
 
 async function sendAccountActivationEmail(email, uniqueString, apiHostDomain) {
-  // on production env get this kind of config
-  // const transport = nodemailer.createTransport({
-  //   service: 'Gmail',
-  //   auth: {
-  //     user: 'may@gmail.com',
-  //     pass: 'myPassWord',
-  //   },
-  // });
-
-  const transport = nodemailer.createTransport({
-    service: "mailhog",
-    port: 1025,
-  });
+  let transport;
+  if (process.env.NODE_ENV === "development") {
+    transport = nodemailer.createTransport({
+      service: process.env.NODEMAILER_SERVICE,
+      port: 1025,
+    });
+  } else {
+    // on production env get this kind of config
+    transport = nodemailer.createTransport({
+      service: process.env.NODEMAILER_SERVICE,
+      auth: {
+        user: process.env.NODEMAILER_USER,
+        pass: process.env.NODEMAILER_PASS,
+      },
+    });
+  }
 
   const sender = "MiniBlog My Company <info@mini-blog.org>";
   const mailOptions = {
@@ -49,9 +52,10 @@ async function sendAccountActivationEmail(email, uniqueString, apiHostDomain) {
 
   transport.sendMail(mailOptions, (error, response) => {
     if (error) {
+      console.log("Confirmation email not sent");
       console.log(error);
     } else {
-      console.log("Message sent");
+      console.log("Confirmation email sent");
     }
   });
 }
