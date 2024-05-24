@@ -7,6 +7,10 @@ const ArticleSchema = new Schema(
       type: String,
       required: [true, "Please enter title"],
     },
+    summary: {
+      type: String,
+      required: [true, "Please enter content"],
+    },
     content: {
       type: String,
       required: [true, "Please enter content"],
