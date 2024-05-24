@@ -28,10 +28,23 @@ async function getAllArticles(req, res) {
     const articles = await ArticleModel.find({
       isPublished: true,
       isArchived: false,
-    });
+    })
+      .select({ title: 1, summary: 1, createdAt: 1 })
+      .populate({
+        path: "user",
+        model: "User",
+        select: { _id: 0, username: 1, email: 1 },
+        populate: {
+          path: "role",
+          model: "Role",
+          select: { _id: 0, roleName: 1 },
+        },
+      });
+
     if (!articles || articles.length === 0) {
       return res.status(404).json({ message: "Articles not found" });
     }
+
     return res.status(200).json(articles);
   } catch (error) {
     return res.status(500).json({ message: error.message });
