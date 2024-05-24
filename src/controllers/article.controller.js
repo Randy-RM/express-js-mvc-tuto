@@ -85,16 +85,21 @@ in the request
 async function updateArticle(req, res) {
   try {
     const { articleId } = req.params;
-    const { id, role } = req.user;
-    const article = await ArticleModel.findByIdAndUpdate(articleId, req.body);
+    const {
+      id: userId,
+      role: { roleName },
+    } = req.user;
+    const article = await ArticleModel.findById(articleId);
+
     if (!article) {
       return res.status(404).json({ message: "Article not found" });
     }
+
     if (
       !isUserAuthorizedToModifyResource({
         userIdInResource: article.user,
-        logedUserId: id,
-        logedUserRoleName: role.roleName,
+        logedUserId: userId,
+        logedUserRoleName: roleName,
       })
     ) {
       return res
@@ -102,8 +107,9 @@ async function updateArticle(req, res) {
         .json({ message: "Unauthorized to modify resource" });
     }
 
-    const updatedArticle = await ArticleModel.findById(articleId);
-    return res.status(200).json(updatedArticle);
+    await article.updateOne({ ...req.body });
+
+    return res.status(200).json({ message: "Article updated successfully" });
   } catch (error) {
     return res.status(500).json({ message: error.message });
   }
