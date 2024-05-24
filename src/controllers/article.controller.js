@@ -126,8 +126,12 @@ async function deleteArticle(req, res) {
   try {
     const { articleId } = req.params;
     const { id, role } = req.user;
-
     const article = await ArticleModel.findById(articleId);
+
+    if (!article) {
+      return res.status(404).json({ message: "Article not found" });
+    }
+
     if (
       article &&
       !isUserAuthorizedToModifyResource({
@@ -141,10 +145,7 @@ async function deleteArticle(req, res) {
         .json({ message: "Unauthorized to modify resource" });
     }
 
-    const deletedArticle = await ArticleModel.findByIdAndDelete(articleId);
-    if (!deletedArticle) {
-      return res.status(404).json({ message: "Article not found" });
-    }
+    await article.deleteOne();
 
     return res.status(200).json({ message: "Article deleted successfully" });
   } catch (error) {
