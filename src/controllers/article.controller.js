@@ -10,7 +10,11 @@ the database.
 async function getOneArticle(req, res) {
   try {
     const { articleId } = req.params;
-    const article = await ArticleModel.findById(articleId);
+    const article = await ArticleModel.findById(articleId).populate({
+      path: "user",
+      model: "User",
+      select: { _id: 0, username: 1, email: 1 },
+    });
     return res.status(200).json(article);
   } catch (error) {
     return res.status(500).json({ message: error.message });
