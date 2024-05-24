@@ -58,14 +58,19 @@ in the database
 --------------------------
 */
 async function createArticle(req, res) {
-  const { id } = req.user;
+  const { id: userId } = req.user;
   try {
-    const user = await UserModel.findById(id);
-    const newArticle = await ArticleModel.create({
-      ...req.body,
-      user: user,
-    });
-    return res.status(200).json(newArticle);
+    const user = await UserModel.findById(userId);
+    if (!user) {
+      return res
+        .status(404)
+        .json({ message: "This user not found in database" });
+    }
+
+    const article = { ...req.body, user };
+    await ArticleModel.create(article);
+
+    return res.status(201).json({ message: "Article created" });
   } catch (error) {
     return res.status(500).json({ message: error.message });
   }
