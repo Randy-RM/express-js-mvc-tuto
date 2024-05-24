@@ -25,7 +25,13 @@ the database.
 */
 async function getAllArticles(req, res) {
   try {
-    const articles = await ArticleModel.find({});
+    const articles = await ArticleModel.find({
+      isPublished: true,
+      isArchived: false,
+    });
+    if (!articles || articles.length === 0) {
+      return res.status(404).json({ message: "Articles not found" });
+    }
     return res.status(200).json(articles);
   } catch (error) {
     return res.status(500).json({ message: error.message });
