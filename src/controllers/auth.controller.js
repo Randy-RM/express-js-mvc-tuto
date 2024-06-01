@@ -96,7 +96,9 @@ async function signin(req, res) {
     const user = await UserModel.findOne({ email: email }).populate("role");
 
     if (!user) {
-      return res.status(400).json({ message: "Invalid email" });
+      return res
+        .status(404)
+        .json({ message: `User with this email "${email}" not found` });
     }
     const passwordMatch = await user.isUserPassword(password);
     if (!passwordMatch) {
