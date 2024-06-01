@@ -1,5 +1,20 @@
 const nodemailer = require("nodemailer");
+const { RoleModel } = require("../models/index.js");
 const { authBaseURI, activateAccountURI } = require("../config/paths.config");
+
+async function getRoles() {
+  try {
+    const roles = await RoleModel.find().select("roleName");
+    const rolesNames = roles.map(({ roleName }) => roleName);
+    const userRoles = Object.fromEntries(
+      rolesNames.map((role) => [role, role])
+    );
+    return userRoles;
+  } catch (error) {
+    console.log(error);
+    throw error;
+  }
+}
 
 function isUserAuthorizedToModifyResource({
   userIdInResource,
@@ -61,6 +76,7 @@ async function sendAccountActivationEmail(email, uniqueString, apiHostDomain) {
 }
 
 module.exports = {
+  getRoles: getRoles,
   isUserAuthorizedToModifyResource: isUserAuthorizedToModifyResource,
   randomStringGenerator: randomStringGenerator,
   sendAccountActivationEmail: sendAccountActivationEmail,
