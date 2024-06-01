@@ -8,10 +8,9 @@ const {
   getOneArticle,
   updateArticle,
 } = require("../controllers/article.controller.js");
-const {
-  isAdmin,
-  isAuthorOrAdmin,
-} = require("../middlewares/auth.middleware.js");
+const { authorize } = require("../middlewares/auth.middleware.js");
+
+const { ROLES } = require("../constant");
 
 const articleRouter = Router();
 
@@ -24,28 +23,34 @@ articleRouter.get(`/:articleId`, getOneArticle);
 //Create a new article
 articleRouter.post(
   `/`,
-  [passport.authenticate("jwt", { session: false }), isAuthorOrAdmin],
+  [passport.authenticate("jwt", { session: false }), authorize([ROLES.ADMIN])],
   createArticle
 );
 
 //Update article by articleId
 articleRouter.put(
   `/:articleId`,
-  [passport.authenticate("jwt", { session: false }), isAuthorOrAdmin],
+  [
+    passport.authenticate("jwt", { session: false }),
+    authorize([ROLES.ADMIN, ROLES.AUTHOR]),
+  ],
   updateArticle
 );
 
 //Delete article by articleId
 articleRouter.delete(
   `/:articleId`,
-  [passport.authenticate("jwt", { session: false }), isAuthorOrAdmin],
+  [
+    passport.authenticate("jwt", { session: false }),
+    authorize([ROLES.ADMIN, ROLES.AUTHOR]),
+  ],
   deleteArticle
 );
 
 //Delete all articles
 articleRouter.delete(
   `/`,
-  [passport.authenticate("jwt", { session: false }), isAdmin],
+  [passport.authenticate("jwt", { session: false }), authorize([ROLES.ADMIN])],
   deleteAllArticles
 );
 
