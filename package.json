@@ -1,13 +1,13 @@
 {
   "name": "express-js-mvc-tuto",
   "version": "1.0.0",
-  "main": "./src/index.js",
+  "main": "./src/server.js",
   "repository": "https://github.com/Randy-RM/express-js-mvc-tuto.git",
   "author": "Randy-RM <randymuhema@gmail.com>",
   "license": "MIT",
   "scripts": {
-    "dev": "nodemon ./src/index.js",
-    "prod": "node ./src/index.js",
+    "dev": "nodemon ./src/server.js",
+    "prod": "node ./src/server.js",
     "seed": "node ./src/seeders/role.seeders.js"
   },
   "dependencies": {
