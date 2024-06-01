@@ -3,19 +3,7 @@ const express = require("express");
 const cors = require("cors");
 const passport = require("passport");
 const dbConnection = require("./config/database.config");
-
-const {
-  articleBaseURI,
-  authBaseURI,
-  roleBaseURI,
-  userBaseURI,
-} = require("./config/paths.config");
-const {
-  articleRouter,
-  authRouter,
-  roleRouter,
-  userRouter,
-} = require("./routes");
+const router = require("./routes");
 
 /**
  * -------------- GENERAL SETUP ----------------
@@ -47,11 +35,10 @@ app.use(passport.initialize());
 /**
  * -------------- ROUTE ----------------
  */
-app.use(authBaseURI, authRouter);
-app.use(roleBaseURI, roleRouter);
-app.use(userBaseURI, userRouter);
-app.use(articleBaseURI, articleRouter);
-app.get("/", (req, res, next) => {
+// Imports all of the routes
+// from ./routes/index
+app.use("/api", router);
+app.get("/api", (req, res, next) => {
   return res.json({ message: "Welcome to Express MVC Tuto API" });
 });
 
