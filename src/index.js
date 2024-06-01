@@ -4,6 +4,7 @@ const cors = require("cors");
 const passport = require("passport");
 const dbConnection = require("./config/database.config");
 const router = require("./routes");
+const { logger } = require("./middlewares");
 
 /**
  * -------------- GENERAL SETUP ----------------
@@ -38,6 +39,8 @@ app.use(passport.initialize());
 /**
  * -------------- ROUTE ----------------
  */
+// logger middleware
+app.use(logger);
 // Imports all of the routes
 // from ./routes/index
 app.use("/api", router);
