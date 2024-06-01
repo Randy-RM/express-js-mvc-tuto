@@ -11,7 +11,10 @@ const router = require("./routes");
 const app = express();
 const PORT = process.env.PORT || 8000;
 const corsOptions = {
-  origin: "*", // [ `${process.env.API_HOST}${PORT}`,`${process.env.CLIENT_HOST}${PORT}`]
+  origin:
+    process.env.NODE_ENV === "production"
+      ? [`${process.env.API_HOST}`, `${process.env.CLIENT_HOST}`]
+      : "*",
 };
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
