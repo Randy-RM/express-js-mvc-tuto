@@ -6,7 +6,7 @@ const mongoose = require("mongoose");
 const dbUrl = process.env.MONGOHQ_URL;
 
 //create your array. i inserted only 1 object here
-const rolses = [
+const roles = [
   new Role({ roleName: "admin" }),
   new Role({ roleName: "author" }),
   new Role({ roleName: "user" }),
@@ -28,10 +28,10 @@ const clearAndCreateNewRoleCollection = async () => {
       // Number of documents deleted
       console.log("Role deleted", roleCollection.deletedCount);
       //save your data. this is an async operation
-      //after you make sure you seeded all the rolses, disconnect automatically
-      rolses.map(async (role, index) => {
+      //after you make sure you seeded all the roles, disconnect automatically
+      roles.map(async (role, index) => {
         await role.save();
-        if (index === rolses.length - 1) {
+        if (index === roles.length - 1) {
           console.log("seed done");
           mongoose.disconnect();
         }
