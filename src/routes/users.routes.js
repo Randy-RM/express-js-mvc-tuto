@@ -8,7 +8,7 @@ const {
   getOneUser,
   updateUser,
 } = require("../controllers/user.controller.js");
-const { authorize } = require("../middlewares/auth.middleware.js");
+const { authorize } = require("../middlewares");
 
 const { ROLES } = require("../constant");
 
