@@ -102,8 +102,8 @@ async function updateArticle(req, res) {
     if (
       !isUserAuthorizedToModifyResource({
         userIdInResource: article.user,
-        logedUserId: userId,
-        logedUserRoleName: roleName,
+        loggedUserId: userId,
+        loggedUserRoleName: roleName,
       })
     ) {
       return res
@@ -140,8 +140,8 @@ async function deleteArticle(req, res) {
       article &&
       !isUserAuthorizedToModifyResource({
         userIdInResource: article.user,
-        logedUserId: id,
-        logedUserRoleName: role.roleName,
+        loggedUserId: id,
+        loggedUserRoleName: role.roleName,
       })
     ) {
       return res
