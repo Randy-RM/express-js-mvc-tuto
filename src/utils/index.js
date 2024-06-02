@@ -18,11 +18,11 @@ async function getRoles() {
 
 function isUserAuthorizedToModifyResource({
   userIdInResource,
-  logedUserId,
-  logedUserRoleName,
+  loggedUserId,
+  loggedUserRoleName,
 }) {
-  if (userIdInResource != logedUserId) {
-    if (logedUserRoleName != "admin") {
+  if (userIdInResource != loggedUserId) {
+    if (loggedUserRoleName != "admin") {
       return false;
     }
   }
