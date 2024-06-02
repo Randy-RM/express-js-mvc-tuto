@@ -39,28 +39,26 @@ in the database
 --------------------------
 */
 async function createUser(req, res) {
-  const { username, email, password } = req.body;
-  try {
-    const userRole = await RoleModel.findOne({ roleName: "author" });
+  const { username, email, password, roleName = "author" } = req.body;
 
-    const user = new UserModel({
-      username: username,
-      email: email,
-      password: await bcrypt.hash(password, 10),
-      role: userRole ? userRole : null,
+  try {
+    const role = await RoleModel.findOne({ roleName });
+    const hashedPassword = await bcrypt.hash(password, 10);
+
+    if (!role) {
+      return res
+        .status(422)
+        .json({ message: `The role "${roleName}" does not exist` });
+    }
+
+    await UserModel.create({
+      username,
+      email,
+      password: hashedPassword,
+      role: role ? role : null,
     });
 
-    const newUser = await user
-      .save()
-      .then((user) => user)
-      .catch((error) => {
-        return { error: error.message };
-      });
-
-    if (newUser.error) {
-      throw new Error(newUser.error);
-    }
-    return res.status(201).json({ message: "User is created", data: newUser });
+    return res.status(201).json({ message: "User created" });
   } catch (error) {
     return res.status(500).json({ message: error.message });
   }
