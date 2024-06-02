@@ -113,7 +113,37 @@ in the request
 --------------------------
 */
 async function deleteUser(req, res) {
-  return res.send("User is deleted");
+  const { userId } = req.params;
+  const {
+    id: loggedUserId,
+    role: { roleName: loggedUserRoleName },
+  } = req.user;
+
+  try {
+    const user = await UserModel.findById(userId);
+
+    if (!user) {
+      return res.status(404).json({ message: "User not found" });
+    }
+
+    if (
+      !isUserAuthorizedToModifyResource({
+        userIdInResource: user.id,
+        loggedUserId: loggedUserId,
+        loggedUserRoleName: loggedUserRoleName,
+      })
+    ) {
+      return res
+        .status(401)
+        .json({ message: "Unauthorized to modify resource" });
+    }
+
+    await user.deleteOne();
+
+    return res.status(200).json({ message: "User deleted successfully" });
+  } catch (error) {
+    return res.status(500).json({ message: error.message });
+  }
 }
 
 /*
