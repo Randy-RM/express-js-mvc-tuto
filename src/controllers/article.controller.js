@@ -8,8 +8,9 @@ the database.
 --------------------------
 */
 async function getOneArticle(req, res) {
+  const { articleId } = req.params;
+
   try {
-    const { articleId } = req.params;
     const article = await ArticleModel.findById(articleId).populate({
       path: "user",
       model: "User",
@@ -63,8 +64,10 @@ in the database
 */
 async function createArticle(req, res) {
   const { id: userId } = req.user;
+
   try {
     const user = await UserModel.findById(userId);
+
     if (!user) {
       return res
         .status(404)
@@ -87,12 +90,13 @@ in the request
 --------------------------
 */
 async function updateArticle(req, res) {
+  const { articleId } = req.params;
+  const {
+    id: loggedUserId,
+    role: { roleName: loggedUserRoleName },
+  } = req.user;
+
   try {
-    const { articleId } = req.params;
-    const {
-      id: userId,
-      role: { roleName },
-    } = req.user;
     const article = await ArticleModel.findById(articleId);
 
     if (!article) {
@@ -102,8 +106,8 @@ async function updateArticle(req, res) {
     if (
       !isUserAuthorizedToModifyResource({
         userIdInResource: article.user,
-        loggedUserId: userId,
-        loggedUserRoleName: roleName,
+        loggedUserId: loggedUserId,
+        loggedUserRoleName: loggedUserRoleName,
       })
     ) {
       return res
@@ -127,9 +131,13 @@ in the request
 --------------------------
 */
 async function deleteArticle(req, res) {
+  const { articleId } = req.params;
+  const {
+    id: loggedUserId,
+    role: { roleName: loggedUserRoleName },
+  } = req.user;
+
   try {
-    const { articleId } = req.params;
-    const { id, role } = req.user;
     const article = await ArticleModel.findById(articleId);
 
     if (!article) {
@@ -140,8 +148,8 @@ async function deleteArticle(req, res) {
       article &&
       !isUserAuthorizedToModifyResource({
         userIdInResource: article.user,
-        loggedUserId: id,
-        loggedUserRoleName: role.roleName,
+        loggedUserId: loggedUserId,
+        loggedUserRoleName: loggedUserRoleName,
       })
     ) {
       return res
