@@ -16,6 +16,13 @@ async function getOneArticle(req, res) {
       model: "User",
       select: { _id: 0, username: 1, email: 1 },
     });
+
+    if (!article) {
+      return res
+        .status(404)
+        .json({ message: `Article with id "${articleId}" not found` });
+    }
+
     return res.status(200).json(article);
   } catch (error) {
     return res.status(500).json({ message: error.message });
