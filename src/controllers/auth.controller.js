@@ -69,14 +69,16 @@ async function activateAccount(req, res) {
     const user = await UserModel.findOneAndUpdate(filter, update, {
       returnOriginal: false,
     });
+
     if (!user) {
       throw new Error("problems arising from verification");
     }
+
     console.log("User account is activated");
     return res.json({ message: "User account is activated" });
     // return res.redirect(`${process.env.CLIENT_HOST}${process.env.CLIENT_VERIFY}`);
   } catch (error) {
-    return res.status(500).json({ message: ` ${error}` });
+    return res.status(500).json({ message: error.message });
   }
 }
 
