@@ -9,8 +9,9 @@ the database.
 --------------------------
 */
 async function getOneUser(req, res) {
+  const { userId } = req.params;
+
   try {
-    const { userId } = req.params;
     const user = await UserModel.findById(userId).populate("role");
     return res.status(200).json(user);
   } catch (error) {
@@ -27,6 +28,11 @@ the database.
 async function getAllUsers(req, res) {
   try {
     const users = await UserModel.find({}).populate("role");
+
+    if (!users || users.length === 0) {
+      return res.status(404).json({ message: "Users not found" });
+    }
+
     return res.status(200).json(users);
   } catch (error) {
     return res.status(500).json({ message: error.message });
