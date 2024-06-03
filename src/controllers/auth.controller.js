@@ -24,25 +24,22 @@ async function signup(req, res) {
 
   try {
     const userRole = await RoleModel.findOne(role);
+    const hashedPassword = await bcrypt.hash(password, 10);
 
-    const user = new UserModel({
+    if (!userRole) {
+      return res
+        .status(422)
+        .json({ message: `The role "${role.roleName}" does not exist` });
+    }
+
+    await UserModel.create({
       username: username,
       email: email,
-      password: await bcrypt.hash(password, 10),
+      password: hashedPassword,
       uniqueString: randomStringGenerator(),
       role: userRole ? userRole : null,
     });
 
-    const newUser = await user
-      .save()
-      .then((user) => user)
-      .catch((error) => {
-        return { error: error.message };
-      });
-
-    if (newUser.error) {
-      throw new Error(newUser.error);
-    }
     // send mail to user
     sendAccountActivationEmail(
       newUser.email,
@@ -50,7 +47,7 @@ async function signup(req, res) {
       apiHostDomain
     );
 
-    return res.status(201).json({ message: "User is created", data: newUser });
+    return res.status(201).json({ message: "User created" });
   } catch (error) {
     return res.status(500).json({ message: error.message });
   }
