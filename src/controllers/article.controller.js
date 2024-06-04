@@ -1,5 +1,5 @@
 const { ArticleModel, UserModel } = require("../models/index.js");
-const { isUserAuthorizedToModifyResource } = require("../utils/index.js");
+const { isAuthorizedToInteractWithResource } = require("../utils/index.js");
 
 /*
 --------------------------
@@ -111,7 +111,7 @@ async function updateArticle(req, res) {
     }
 
     if (
-      !isUserAuthorizedToModifyResource({
+      !isAuthorizedToInteractWithResource({
         userIdInResource: article.user,
         loggedUserId: loggedUserId,
         loggedUserRoleName: loggedUserRoleName,
@@ -153,7 +153,7 @@ async function deleteArticle(req, res) {
 
     if (
       article &&
-      !isUserAuthorizedToModifyResource({
+      !isAuthorizedToInteractWithResource({
         userIdInResource: article.user,
         loggedUserId: loggedUserId,
         loggedUserRoleName: loggedUserRoleName,

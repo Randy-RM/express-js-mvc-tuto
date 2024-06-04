@@ -16,7 +16,7 @@ async function getRoles() {
   }
 }
 
-function isUserAuthorizedToModifyResource({
+function isAuthorizedToInteractWithResource({
   userIdInResource,
   loggedUserId,
   loggedUserRoleName,
@@ -77,7 +77,7 @@ async function sendAccountActivationEmail(email, uniqueString, apiHostDomain) {
 
 module.exports = {
   getRoles: getRoles,
-  isUserAuthorizedToModifyResource: isUserAuthorizedToModifyResource,
+  isAuthorizedToInteractWithResource: isAuthorizedToInteractWithResource,
   randomStringGenerator: randomStringGenerator,
   sendAccountActivationEmail: sendAccountActivationEmail,
 };
