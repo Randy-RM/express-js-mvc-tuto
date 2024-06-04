@@ -10,8 +10,24 @@ the database.
 */
 async function getOneUser(req, res) {
   const { userId } = req.params;
+  const {
+    id: loggedUserId,
+    role: { roleName: loggedUserRoleName },
+  } = req.user;
 
   try {
+    if (
+      !isAuthorizedToInteractWithResource({
+        userIdInResource: userId,
+        loggedUserId: loggedUserId,
+        loggedUserRoleName: loggedUserRoleName,
+      })
+    ) {
+      return res
+        .status(401)
+        .json({ message: "Unauthorized to view resources" });
+    }
+
     const user = await UserModel.findById(userId).populate("role");
 
     if (!user) {
