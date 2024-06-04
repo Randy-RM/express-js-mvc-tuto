@@ -1,6 +1,6 @@
 const bcrypt = require("bcrypt");
-const { UserModel, RoleModel } = require("../models/index.js");
-const { isUserAuthorizedToModifyResource } = require("../utils/index.js");
+const { UserModel, RoleModel, ArticleModel } = require("../models/index.js");
+const { isAuthorizedToInteractWithResource } = require("../utils/index.js");
 
 /*
 --------------------------
@@ -99,7 +99,7 @@ async function updateUser(req, res) {
     }
 
     if (
-      !isUserAuthorizedToModifyResource({
+      !isAuthorizedToInteractWithResource({
         userIdInResource: user.id,
         loggedUserId: loggedUserId,
         loggedUserRoleName: loggedUserRoleName,
@@ -140,7 +140,7 @@ async function deleteUser(req, res) {
     }
 
     if (
-      !isUserAuthorizedToModifyResource({
+      !isAuthorizedToInteractWithResource({
         userIdInResource: user.id,
         loggedUserId: loggedUserId,
         loggedUserRoleName: loggedUserRoleName,
@@ -169,6 +169,51 @@ async function deleteAllUsers(req, res) {
   return res.send("Users are deleted");
 }
 
+/*
+--------------------------
+Retrieve user articles from 
+the database.
+--------------------------
+*/
+async function getUserArticles(req, res) {
+  const { userId } = req.params;
+  const {
+    id: loggedUserId,
+    role: { roleName: loggedUserRoleName },
+  } = req.user;
+
+  try {
+    if (
+      !isAuthorizedToInteractWithResource({
+        userIdInResource: userId,
+        loggedUserId: loggedUserId,
+        loggedUserRoleName: loggedUserRoleName,
+      })
+    ) {
+      return res
+        .status(401)
+        .json({ message: "Unauthorized to view resources" });
+    }
+
+    const articles = await ArticleModel.find({ user: userId }).select({
+      id: 1,
+      title: 1,
+      summary: 1,
+      isPublished: 1,
+      isArchived: 1,
+      createdAt: 1,
+    });
+
+    if (!articles || articles.length === 0) {
+      return res.status(404).json({ message: "Articles not found" });
+    }
+
+    return res.status(200).json({ data: articles });
+  } catch (error) {
+    return res.status(500).json({ message: error.message });
+  }
+}
+
 module.exports = {
   createUser,
   deleteAllUsers,
@@ -176,4 +221,5 @@ module.exports = {
   getAllUsers,
   getOneUser,
   updateUser,
+  getUserArticles,
 };
