@@ -201,6 +201,11 @@ async function getUserArticles(req, res) {
     role: { roleName: loggedUserRoleName },
   } = req.user;
 
+  // If a cursor is provided, add it to the query
+  if (cursor) {
+    query = { _id: { $gt: cursor } };
+  }
+
   try {
     if (
       !isAuthorizedToInteractWithResource({
