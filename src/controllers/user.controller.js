@@ -193,6 +193,9 @@ the database.
 */
 async function getUserArticles(req, res) {
   const { userId } = req.params;
+  const { cursor, limit = 10 } = req.query;
+  let query = {};
+
   const {
     id: loggedUserId,
     role: { roleName: loggedUserRoleName },
@@ -211,20 +214,32 @@ async function getUserArticles(req, res) {
         .json({ message: "Unauthorized to view resources" });
     }
 
-    const articles = await ArticleModel.find({ user: userId }).select({
-      id: 1,
-      title: 1,
-      summary: 1,
-      isPublished: 1,
-      isArchived: 1,
-      createdAt: 1,
-    });
+    const articles = await ArticleModel.find({ user: userId, ...query })
+      .select({
+        id: 1,
+        title: 1,
+        summary: 1,
+        isPublished: 1,
+        isArchived: 1,
+        createdAt: 1,
+      })
+      .limit(Number(limit));
 
     if (!articles || articles.length === 0) {
       return res.status(404).json({ message: "Articles not found" });
     }
 
-    return res.status(200).json({ data: articles });
+    // Extract the next and previous cursor from the result
+    const prevCursor = cursor && articles.length > 0 ? articles[0]._id : null;
+    const nextCursor =
+      articles.length > 0 ? articles[articles.length - 1]._id : null;
+
+    return res.status(200).json({
+      nextCursor,
+      prevCursor,
+      totalResults: articles.length,
+      data: articles,
+    });
   } catch (error) {
     return res.status(500).json({ message: error.message });
   }
