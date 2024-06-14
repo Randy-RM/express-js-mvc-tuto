@@ -36,10 +36,20 @@ the database.
 --------------------------
 */
 async function getAllArticles(req, res) {
+  const { cursor, limit = 10 } = req.query;
+  let query = {};
+
+  // If a cursor is provided, add it to the query
+  if (cursor) {
+    query = { _id: { $gt: cursor } };
+  }
+
   try {
+    // Fetch articles using the cursor-based query
     const articles = await ArticleModel.find({
       isPublished: true,
       isArchived: false,
+      ...query,
     })
       .select({ title: 1, summary: 1, createdAt: 1 })
       .populate({
@@ -51,13 +61,24 @@ async function getAllArticles(req, res) {
           model: "Role",
           select: { _id: 0, roleName: 1 },
         },
-      });
+      })
+      .limit(Number(limit));
 
     if (!articles || articles.length === 0) {
       return res.status(404).json({ message: "Articles not found" });
     }
 
-    return res.status(200).json(articles);
+    // Extract the next and previous cursor from the result
+    const prevCursor = cursor && articles.length > 0 ? articles[0]._id : null;
+    const nextCursor =
+      articles.length > 0 ? articles[articles.length - 1]._id : null;
+
+    return res.status(200).json({
+      nextCursor,
+      prevCursor,
+      totalResults: articles.length,
+      articles,
+    });
   } catch (error) {
     return res.status(500).json({ message: error.message });
   }
