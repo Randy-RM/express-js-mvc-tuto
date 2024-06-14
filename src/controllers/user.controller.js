@@ -49,14 +49,33 @@ the database.
 --------------------------
 */
 async function getAllUsers(req, res) {
+  const { cursor, limit = 10 } = req.query;
+  let query = {};
+
+  // If a cursor is provided, add it to the query
+  if (cursor) {
+    query = { _id: { $gt: cursor } };
+  }
+
   try {
-    const users = await UserModel.find({}).populate("role");
+    const users = await UserModel.find({ ...query })
+      .populate("role")
+      .limit(Number(limit));
 
     if (!users || users.length === 0) {
       return res.status(404).json({ message: "Users not found" });
     }
 
-    return res.status(200).json(users);
+    // Extract the next and previous cursor from the result
+    const prevCursor = cursor && users.length > 0 ? users[0]._id : null;
+    const nextCursor = users.length > 0 ? users[users.length - 1]._id : null;
+
+    return res.status(200).json({
+      nextCursor,
+      prevCursor,
+      totalResults: users.length,
+      data: users,
+    });
   } catch (error) {
     return res.status(500).json({ message: error.message });
   }
