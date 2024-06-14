@@ -77,7 +77,7 @@ async function getAllArticles(req, res) {
       nextCursor,
       prevCursor,
       totalResults: articles.length,
-      articles,
+      data: articles,
     });
   } catch (error) {
     return res.status(500).json({ message: error.message });
