@@ -2,6 +2,8 @@ const bcrypt = require("bcrypt");
 const { Schema } = require("mongoose");
 const dbConnection = require("../config/database.config");
 
+const validRoles = ["user", "moderator", "admin"];
+
 const UserSchema = new Schema({
   username: {
     type: String,
@@ -23,7 +25,11 @@ const UserSchema = new Schema({
   uniqueString: {
     type: String,
   },
-  role: { type: Schema.Types.ObjectId, ref: "Role" },
+  role: {
+    type: String,
+    enum: validRoles,
+    default: "user",
+  },
 });
 
 UserSchema.methods.isUserPassword = async function (password) {
