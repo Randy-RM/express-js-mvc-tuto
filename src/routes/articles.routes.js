@@ -32,7 +32,7 @@ articleRouter.put(
   `/:articleId`,
   [
     passport.authenticate("jwt", { session: false }),
-    authorize([ROLES.ADMIN, ROLES.AUTHOR]),
+    authorize([ROLES.ADMIN, ROLES.MODERATOR]),
   ],
   updateArticle
 );
@@ -42,7 +42,7 @@ articleRouter.delete(
   `/:articleId`,
   [
     passport.authenticate("jwt", { session: false }),
-    authorize([ROLES.ADMIN, ROLES.AUTHOR]),
+    authorize([ROLES.ADMIN, ROLES.MODERATOR]),
   ],
   deleteArticle
 );

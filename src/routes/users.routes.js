@@ -62,7 +62,7 @@ userRouter.get(
   `/:userId/articles`,
   [
     passport.authenticate("jwt", { session: false }),
-    authorize([ROLES.ADMIN, ROLES.AUTHOR]),
+    authorize([ROLES.ADMIN, ROLES.MODERATOR]),
   ],
   getUserArticles
 );
