@@ -1,8 +1,9 @@
 const bcrypt = require("bcrypt");
 const { Schema } = require("mongoose");
 const dbConnection = require("../config/database.config");
+const { ROLES } = require("../constant");
 
-const validRoles = ["user", "moderator", "admin"];
+const validRoles = [ROLES.USER, ROLES.MODERATOR, ROLES.ADMIN];
 
 const UserSchema = new Schema({
   username: {
