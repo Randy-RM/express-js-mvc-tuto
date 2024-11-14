@@ -36,21 +36,29 @@ the database.
 --------------------------
 */
 async function getAllArticles(req, res) {
-  const { cursor, limit = 10 } = req.query;
+  const {
+    cursor,
+    limit = 10,
+    sort = "desc",
+    isPublished = false,
+    isArchived = false,
+  } = req.query;
   let query = {};
 
   // If a cursor is provided, add it to the query
   if (cursor) {
-    query = { _id: { $gt: cursor } };
+    query = { ...query, _id: { $gt: cursor } };
+  }
+  if (isPublished) {
+    query = { ...query, isPublished: isPublished };
+  }
+  if (isArchived) {
+    query = { ...query, isArchived: isArchived };
   }
 
   try {
     // Fetch articles using the cursor-based query
-    const articles = await ArticleModel.find({
-      isPublished: true,
-      isArchived: false,
-      ...query,
-    })
+    const articles = await ArticleModel.find({ ...query })
       .select({ title: 1, summary: 1, createdAt: 1 })
       .populate({
         path: "user",
