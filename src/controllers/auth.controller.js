@@ -83,7 +83,7 @@ async function signin(req, res) {
   const { email, password } = req.body;
 
   try {
-    const user = await UserModel.findOne({ email: email }).populate("role");
+    const user = await UserModel.findOne({ email: email });
 
     if (!user) {
       return res
@@ -109,7 +109,7 @@ async function signin(req, res) {
         user: {
           username: user.username,
           email: user.email,
-          userRole: user.role.roleName,
+          userRole: user.role,
         },
         token: token,
       },
