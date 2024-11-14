@@ -1,6 +1,6 @@
 const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
-const { RoleModel, UserModel } = require("../models/index.js");
+const { UserModel } = require("../models/index.js");
 const {
   randomStringGenerator,
   sendAccountActivationEmail,
@@ -16,28 +16,19 @@ async function signup(req, res) {
   const { adminRouteParams } = req.params;
   const { username, email, password } = req.body;
   const apiHostDomain = req.headers.host;
-  let role =
-    adminRouteParams &&
-    adminRouteParams === process.env.ADMIN_SECRET_SIGNUP_PARAMS_ROUTE
-      ? { roleName: "admin" }
-      : { roleName: "user" };
+  const adminSecret = process.env.ADMIN_SECRET_SIGNUP_PARAMS_ROUTE;
+  const userRole =
+    adminRouteParams && adminRouteParams === adminSecret ? "admin" : "user";
 
   try {
-    const userRole = await RoleModel.findOne(role);
     const hashedPassword = await bcrypt.hash(password, 10);
-
-    if (!userRole) {
-      return res
-        .status(422)
-        .json({ message: `The role "${role.roleName}" does not exist` });
-    }
 
     await UserModel.create({
       username: username,
       email: email,
       password: hashedPassword,
       uniqueString: randomStringGenerator(),
-      role: userRole ? userRole : null,
+      role: userRole,
     });
 
     // send mail to user
