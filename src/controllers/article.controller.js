@@ -31,6 +31,71 @@ async function getOneArticle(req, res) {
 
 /*
 --------------------------
+Retrieve user articles from 
+the database.
+--------------------------
+*/
+async function getUserArticles(req, res) {
+  const { userId } = req.params;
+  const { cursor, limit = 10 } = req.query;
+  let query = {};
+
+  const {
+    id: loggedUserId,
+    role: { roleName: loggedUserRoleName },
+  } = req.user;
+
+  // If a cursor is provided, add it to the query
+  if (cursor) {
+    query = { _id: { $gt: cursor } };
+  }
+
+  try {
+    if (
+      !isAuthorizedToInteractWithResource({
+        userIdInResource: userId,
+        loggedUserId: loggedUserId,
+        loggedUserRoleName: loggedUserRoleName,
+      })
+    ) {
+      return res
+        .status(401)
+        .json({ message: "Unauthorized to view resources" });
+    }
+
+    const articles = await ArticleModel.find({ user: userId, ...query })
+      .select({
+        id: 1,
+        title: 1,
+        summary: 1,
+        isPublished: 1,
+        isArchived: 1,
+        createdAt: 1,
+      })
+      .limit(Number(limit));
+
+    if (!articles || articles.length === 0) {
+      return res.status(404).json({ message: "Articles not found" });
+    }
+
+    // Extract the next and previous cursor from the result
+    const prevCursor = cursor && articles.length > 0 ? articles[0]._id : null;
+    const nextCursor =
+      articles.length > 0 ? articles[articles.length - 1]._id : null;
+
+    return res.status(200).json({
+      nextCursor,
+      prevCursor,
+      totalResults: articles.length,
+      data: articles,
+    });
+  } catch (error) {
+    return res.status(500).json({ message: error.message });
+  }
+}
+
+/*
+--------------------------
 Retrieve all articles from 
 the database.
 --------------------------
@@ -217,5 +282,6 @@ module.exports = {
   deleteArticle,
   getAllArticles,
   getOneArticle,
+  getUserArticles,
   updateArticle,
 };
