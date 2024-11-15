@@ -6,6 +6,7 @@ const {
   deleteArticle,
   getAllArticles,
   getOneArticle,
+  getUserArticles,
   updateArticle,
 } = require("../controllers/article.controller.js");
 const { authorize } = require("../middlewares");
@@ -19,6 +20,16 @@ articleRouter.get(`/`, getAllArticles);
 
 //Get one article by articleId
 articleRouter.get(`/:articleId`, getOneArticle);
+
+//Get user articles by userId
+articleRouter.get(
+  `/:userId/articles`,
+  [
+    passport.authenticate("jwt", { session: false }),
+    authorize([ROLES.ADMIN, ROLES.MODERATOR]),
+  ],
+  getUserArticles
+);
 
 //Create a new article
 articleRouter.post(
