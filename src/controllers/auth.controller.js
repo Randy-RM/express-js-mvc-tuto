@@ -3,7 +3,12 @@ const jwt = require("jsonwebtoken");
 const { UserModel } = require("../models/index.js");
 const {
   randomStringGenerator,
-  sendAccountActivationEmail,
+  /**
+   * to be uncommented
+   * to set up mail sending,
+   * activation and confirmation functionality
+   */
+  // sendAccountActivationEmail,
 } = require("../utils/index.js");
 
 /*
@@ -15,7 +20,12 @@ in the database
 async function signup(req, res) {
   const { adminRouteParams } = req.params;
   const { username, email, password } = req.body;
-  const apiHostDomain = req.headers.host;
+  /**
+   * to be uncommented
+   * to set up mail sending,
+   * activation and confirmation functionality
+   */
+  // const apiHostDomain = req.headers.host;
   const adminSecret = process.env.ADMIN_SECRET_SIGNUP_PARAMS_ROUTE;
   const userRole =
     adminRouteParams && adminRouteParams === adminSecret ? "admin" : "user";
@@ -29,14 +39,25 @@ async function signup(req, res) {
       password: hashedPassword,
       uniqueString: randomStringGenerator(),
       role: userRole,
+      /**
+       * to be commented
+       * to set up mail sending,
+       * activation and confirmation functionality
+       */
+      isUserActive: true,
     });
 
+    /**
+     * to be uncommented
+     * to set up mail sending,
+     * activation and confirmation functionality
+     */
     // send mail to user
-    sendAccountActivationEmail(
-      newUser.email,
-      newUser.uniqueString,
-      apiHostDomain
-    );
+    // sendAccountActivationEmail(
+    //   newUser.email,
+    //   newUser.uniqueString,
+    //   apiHostDomain
+    // );
 
     return res.status(201).json({ message: "User created" });
   } catch (error) {
