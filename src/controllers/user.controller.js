@@ -156,10 +156,7 @@ in the request
 */
 async function deleteUser(req, res) {
   const { userId } = req.params;
-  const {
-    id: loggedUserId,
-    role: { roleName: loggedUserRoleName },
-  } = req.user;
+  const { id: loggedUserId, role: loggedUserRole } = req.user;
 
   try {
     const user = await UserModel.findById(userId);
@@ -172,7 +169,7 @@ async function deleteUser(req, res) {
       !isAuthorizedToInteractWithResource({
         userIdInResource: user.id,
         loggedUserId: loggedUserId,
-        loggedUserRoleName: loggedUserRoleName,
+        loggedUserRoleName: loggedUserRole,
       })
     ) {
       return res
