@@ -1,6 +1,9 @@
 const bcrypt = require("bcrypt");
-const { UserModel, RoleModel, ArticleModel } = require("../models/index.js");
-const { isAuthorizedToInteractWithResource } = require("../utils/index.js");
+const { UserModel, ArticleModel } = require("../models/index.js");
+const {
+  isAuthorizedToInteractWithResource,
+  isRoleExist,
+} = require("../utils/index.js");
 
 /*
 --------------------------
@@ -83,23 +86,22 @@ in the database
 --------------------------
 */
 async function createUser(req, res) {
-  const { username, email, password, roleName = "author" } = req.body;
+  const { username, email, password, role } = req.body;
 
   try {
-    const role = await RoleModel.findOne({ roleName });
     const hashedPassword = await bcrypt.hash(password, 10);
 
-    if (!role) {
+    if (!isRoleExist(role) && role != undefined) {
       return res
         .status(422)
-        .json({ message: `The role "${roleName}" does not exist` });
+        .json({ message: `The role "${role}" does not exist` });
     }
 
     await UserModel.create({
       username,
       email,
       password: hashedPassword,
-      role: role ? role : null,
+      role: role || undefined,
     });
 
     return res.status(201).json({ message: "User created" });
