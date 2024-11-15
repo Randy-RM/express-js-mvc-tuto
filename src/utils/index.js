@@ -1,6 +1,7 @@
 const nodemailer = require("nodemailer");
 const { RoleModel } = require("../models/index.js");
 const { authBaseURI, activateAccountURI } = require("../config/paths.config");
+const { ROLES } = require("../constant");
 
 async function getRoles() {
   try {
@@ -14,6 +15,10 @@ async function getRoles() {
     console.log(error);
     throw error;
   }
+}
+
+function isRoleExist(role) {
+  return [ROLES.ADMIN, ROLES.MODERATOR, ROLES.USER].includes(role);
 }
 
 function isAuthorizedToInteractWithResource({
@@ -77,6 +82,7 @@ async function sendAccountActivationEmail(email, uniqueString, apiHostDomain) {
 
 module.exports = {
   getRoles: getRoles,
+  isRoleExist: isRoleExist,
   isAuthorizedToInteractWithResource: isAuthorizedToInteractWithResource,
   randomStringGenerator: randomStringGenerator,
   sendAccountActivationEmail: sendAccountActivationEmail,
