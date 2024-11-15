@@ -118,10 +118,7 @@ in the request
 */
 async function updateUser(req, res) {
   const { userId } = req.params;
-  const {
-    id: loggedUserId,
-    role: { roleName: loggedUserRoleName },
-  } = req.user;
+  const { id: loggedUserId, role: loggedUserRole } = req.user;
 
   try {
     const user = await UserModel.findById(userId);
@@ -134,7 +131,7 @@ async function updateUser(req, res) {
       !isAuthorizedToInteractWithResource({
         userIdInResource: user.id,
         loggedUserId: loggedUserId,
-        loggedUserRoleName: loggedUserRoleName,
+        loggedUserRoleName: loggedUserRole,
       })
     ) {
       return res
