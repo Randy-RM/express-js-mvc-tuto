@@ -1,5 +1,5 @@
 const bcrypt = require("bcrypt");
-const { UserModel, ArticleModel } = require("../models/index.js");
+const { UserModel } = require("../models/index.js");
 const {
   isAuthorizedToInteractWithResource,
   isRoleExist,
