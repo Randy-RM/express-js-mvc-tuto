@@ -55,9 +55,7 @@ async function getAllUsers(req, res) {
   }
 
   try {
-    const users = await UserModel.find({ ...query })
-      .populate("role")
-      .limit(Number(limit));
+    const users = await UserModel.find({ ...query }).limit(Number(limit));
 
     if (!users || users.length === 0) {
       return res.status(404).json({ message: "Users not found" });
