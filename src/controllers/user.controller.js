@@ -10,10 +10,7 @@ the database.
 */
 async function getOneUser(req, res) {
   const { userId } = req.params;
-  const {
-    id: loggedUserId,
-    role: { roleName: loggedUserRoleName },
-  } = req.user;
+  const { id: loggedUserId, role: loggedUserRoleName } = req.user;
 
   try {
     if (
@@ -28,7 +25,7 @@ async function getOneUser(req, res) {
         .json({ message: "Unauthorized to view resources" });
     }
 
-    const user = await UserModel.findById(userId).populate("role");
+    const user = await UserModel.findById(userId);
 
     if (!user) {
       return res
