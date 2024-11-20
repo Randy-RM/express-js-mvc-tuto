@@ -221,10 +221,7 @@ in the request
 */
 async function deleteArticle(req, res) {
   const { articleId } = req.params;
-  const {
-    id: loggedUserId,
-    role: { roleName: loggedUserRoleName },
-  } = req.user;
+  const { id: loggedUserId, role: loggedUserRole } = req.user;
 
   try {
     const article = await ArticleModel.findById(articleId);
@@ -238,7 +235,7 @@ async function deleteArticle(req, res) {
       !isAuthorizedToInteractWithResource({
         userIdInResource: article.user,
         loggedUserId: loggedUserId,
-        loggedUserRoleName: loggedUserRoleName,
+        loggedUserRoleName: loggedUserRole,
       })
     ) {
       return res
