@@ -13,14 +13,14 @@ the database.
 */
 async function getOneUser(req, res) {
   const { userId } = req.params;
-  const { id: loggedUserId, role: loggedUserRoleName } = req.user;
+  const { id: loggedUserId, role: loggedUserRole } = req.user;
 
   try {
     if (
       !isAuthorizedToInteractWithResource({
         userIdInResource: userId,
         loggedUserId: loggedUserId,
-        loggedUserRoleName: loggedUserRoleName,
+        loggedUserRoleName: loggedUserRole,
       })
     ) {
       return res
