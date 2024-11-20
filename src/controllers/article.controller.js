@@ -125,11 +125,6 @@ async function getAllArticles(req, res) {
         path: "user",
         model: "User",
         select: { _id: 0, username: 1, email: 1 },
-        populate: {
-          path: "role",
-          model: "Role",
-          select: { _id: 0, roleName: 1 },
-        },
       })
       .limit(Number(limit));
 
