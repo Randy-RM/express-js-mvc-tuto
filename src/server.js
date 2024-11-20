@@ -1,6 +1,7 @@
 require("dotenv").config();
 const express = require("express");
 const cors = require("cors");
+const helmet = require("helmet");
 const passport = require("passport");
 const dbConnection = require("./config/database.config");
 const router = require("./routes");
@@ -20,6 +21,7 @@ const corsOptions = {
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 app.use(cors(corsOptions));
+app.use(helmet());
 app.use((req, res, next) => {
   res.header(
     "Access-Control-Allow-Headers",
