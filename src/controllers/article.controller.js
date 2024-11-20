@@ -38,9 +38,8 @@ the database.
 async function getUserArticles(req, res) {
   const { userId } = req.params;
   const { cursor, limit = 10 } = req.query;
-  let query = {};
-
   const { id: loggedUserId, role: loggedUserRole } = req.user;
+  let query = {};
 
   // If a cursor is provided, add it to the query
   if (cursor) {
