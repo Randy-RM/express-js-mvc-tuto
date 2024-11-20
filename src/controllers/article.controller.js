@@ -40,10 +40,7 @@ async function getUserArticles(req, res) {
   const { cursor, limit = 10 } = req.query;
   let query = {};
 
-  const {
-    id: loggedUserId,
-    role: { roleName: loggedUserRoleName },
-  } = req.user;
+  const { id: loggedUserId, role: loggedUserRole } = req.user;
 
   // If a cursor is provided, add it to the query
   if (cursor) {
@@ -55,7 +52,7 @@ async function getUserArticles(req, res) {
       !isAuthorizedToInteractWithResource({
         userIdInResource: userId,
         loggedUserId: loggedUserId,
-        loggedUserRoleName: loggedUserRoleName,
+        loggedUserRoleName: loggedUserRole,
       })
     ) {
       return res
