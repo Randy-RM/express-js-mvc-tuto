@@ -1,9 +1,6 @@
 const bcrypt = require("bcrypt");
 const { UserModel } = require("../models/index.js");
-const {
-  isAuthorizedToInteractWithResource,
-  isRoleExist,
-} = require("../utils/index.js");
+const { isAllowedToManipulate, isRoleExist } = require("../utils/index.js");
 
 /*
 --------------------------
@@ -13,27 +10,19 @@ the database.
 */
 async function getOneUser(req, res) {
   const { userId } = req.params;
-  const { id: loggedUserId, role: loggedUserRole } = req.user;
+  const { user: connectedUser } = req;
 
   try {
-    if (
-      !isAuthorizedToInteractWithResource({
-        userIdInResource: userId,
-        loggedUserId: loggedUserId,
-        loggedUserRoleName: loggedUserRole,
-      })
-    ) {
-      return res
-        .status(401)
-        .json({ message: "Unauthorized to view resources" });
-    }
-
     const user = await UserModel.findById(userId);
 
     if (!user) {
+      return res.status(404).json({ message: "User not found" });
+    }
+
+    if (!isAllowedToManipulate(user.id, connectedUser)) {
       return res
-        .status(404)
-        .json({ message: `User with id "${userId}" not found` });
+        .status(401)
+        .json({ message: "Unauthorized to manipulate resource" });
     }
 
     return res.status(200).json(user);
@@ -118,7 +107,7 @@ in the request
 */
 async function updateUser(req, res) {
   const { userId } = req.params;
-  const { id: loggedUserId, role: loggedUserRole } = req.user;
+  const { user: connectedUser } = req;
 
   try {
     const user = await UserModel.findById(userId);
@@ -127,16 +116,10 @@ async function updateUser(req, res) {
       return res.status(404).json({ message: "User not found" });
     }
 
-    if (
-      !isAuthorizedToInteractWithResource({
-        userIdInResource: user.id,
-        loggedUserId: loggedUserId,
-        loggedUserRoleName: loggedUserRole,
-      })
-    ) {
+    if (!isAllowedToManipulate(user.id, connectedUser)) {
       return res
         .status(401)
-        .json({ message: "Unauthorized to modify resource" });
+        .json({ message: "Unauthorized to manipulate resource" });
     }
 
     await user.updateOne({ ...req.body });
@@ -156,7 +139,7 @@ in the request
 */
 async function deleteUser(req, res) {
   const { userId } = req.params;
-  const { id: loggedUserId, role: loggedUserRole } = req.user;
+  const { user: connectedUser } = req;
 
   try {
     const user = await UserModel.findById(userId);
@@ -165,16 +148,10 @@ async function deleteUser(req, res) {
       return res.status(404).json({ message: "User not found" });
     }
 
-    if (
-      !isAuthorizedToInteractWithResource({
-        userIdInResource: user.id,
-        loggedUserId: loggedUserId,
-        loggedUserRoleName: loggedUserRole,
-      })
-    ) {
+    if (!isAllowedToManipulate(user.id, connectedUser)) {
       return res
         .status(401)
-        .json({ message: "Unauthorized to modify resource" });
+        .json({ message: "Unauthorized to manipulate resource" });
     }
 
     await user.deleteOne();

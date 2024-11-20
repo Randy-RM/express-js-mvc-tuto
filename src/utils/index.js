@@ -21,13 +21,10 @@ function isRoleExist(role) {
   return [ROLES.ADMIN, ROLES.MODERATOR, ROLES.USER].includes(role);
 }
 
-function isAuthorizedToInteractWithResource({
-  userIdInResource,
-  loggedUserId,
-  loggedUserRoleName,
-}) {
-  if (userIdInResource != loggedUserId) {
-    if (loggedUserRoleName != "admin") {
+function isAllowedToManipulate(resourceOwnerId, connectedUser) {
+  const { id: loggedUserId, role: loggedUserRole } = connectedUser;
+  if (resourceOwnerId != loggedUserId) {
+    if (loggedUserRole != ROLES.ADMIN) {
       return false;
     }
   }
@@ -83,7 +80,7 @@ async function sendAccountActivationEmail(email, uniqueString, apiHostDomain) {
 module.exports = {
   getRoles: getRoles,
   isRoleExist: isRoleExist,
-  isAuthorizedToInteractWithResource: isAuthorizedToInteractWithResource,
+  isAllowedToManipulate: isAllowedToManipulate,
   randomStringGenerator: randomStringGenerator,
   sendAccountActivationEmail: sendAccountActivationEmail,
 };

@@ -1,5 +1,5 @@
 const { ArticleModel, UserModel } = require("../models/index.js");
-const { isAuthorizedToInteractWithResource } = require("../utils/index.js");
+const { isAllowedToManipulate } = require("../utils/index.js");
 
 /*
 --------------------------
@@ -38,7 +38,6 @@ the database.
 async function getUserArticles(req, res) {
   const { userId } = req.params;
   const { cursor, limit = 10 } = req.query;
-  const { id: loggedUserId, role: loggedUserRole } = req.user;
   let query = {};
 
   // If a cursor is provided, add it to the query
@@ -47,18 +46,6 @@ async function getUserArticles(req, res) {
   }
 
   try {
-    if (
-      !isAuthorizedToInteractWithResource({
-        userIdInResource: userId,
-        loggedUserId: loggedUserId,
-        loggedUserRoleName: loggedUserRole,
-      })
-    ) {
-      return res
-        .status(401)
-        .json({ message: "Unauthorized to view resources" });
-    }
-
     const articles = await ArticleModel.find({ user: userId, ...query })
       .select({
         id: 1,
@@ -183,7 +170,7 @@ in the request
 */
 async function updateArticle(req, res) {
   const { articleId } = req.params;
-  const { id: loggedUserId, role: loggedUserRole } = req.user;
+  const { user: connectedUser } = req;
 
   try {
     const article = await ArticleModel.findById(articleId);
@@ -192,16 +179,10 @@ async function updateArticle(req, res) {
       return res.status(404).json({ message: "Article not found" });
     }
 
-    if (
-      !isAuthorizedToInteractWithResource({
-        userIdInResource: article.user,
-        loggedUserId: loggedUserId,
-        loggedUserRoleName: loggedUserRole,
-      })
-    ) {
+    if (!isAllowedToManipulate(article.user, connectedUser)) {
       return res
         .status(401)
-        .json({ message: "Unauthorized to modify resource" });
+        .json({ message: "Unauthorized to manipulate resource" });
     }
 
     await article.updateOne({ ...req.body });
@@ -221,7 +202,7 @@ in the request
 */
 async function deleteArticle(req, res) {
   const { articleId } = req.params;
-  const { id: loggedUserId, role: loggedUserRole } = req.user;
+  const { user: connectedUser } = req;
 
   try {
     const article = await ArticleModel.findById(articleId);
@@ -230,17 +211,10 @@ async function deleteArticle(req, res) {
       return res.status(404).json({ message: "Article not found" });
     }
 
-    if (
-      article &&
-      !isAuthorizedToInteractWithResource({
-        userIdInResource: article.user,
-        loggedUserId: loggedUserId,
-        loggedUserRoleName: loggedUserRole,
-      })
-    ) {
+    if (!isAllowedToManipulate(article.user, connectedUser)) {
       return res
         .status(401)
-        .json({ message: "Unauthorized to modify resource" });
+        .json({ message: "Unauthorized to manipulate resource" });
     }
 
     await article.deleteOne();
