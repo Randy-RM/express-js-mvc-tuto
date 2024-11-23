@@ -164,7 +164,7 @@ Update article by the id
 in the request
 --------------------------
 */
-async function updateArticle(req, res) {
+async function updateArticle(req, res, next) {
   const { articleId } = req.params;
   const { user: connectedUser } = req;
 
@@ -172,20 +172,18 @@ async function updateArticle(req, res) {
     const article = await ArticleModel.findById(articleId);
 
     if (!article) {
-      return res.status(404).json({ message: "Article not found" });
+      throwError(404, `Article with id "${articleId}" not found`);
     }
 
     if (!isAllowedToManipulate(article.user, connectedUser)) {
-      return res
-        .status(401)
-        .json({ message: "Unauthorized to manipulate resource" });
+      throwError(401, `Unauthorized to manipulate resource"`);
     }
 
     await article.updateOne({ ...req.body });
 
     return res.status(200).json({ message: "Article updated successfully" });
   } catch (error) {
-    return res.status(500).json({ message: error.message });
+    next(error);
   }
 }
 
