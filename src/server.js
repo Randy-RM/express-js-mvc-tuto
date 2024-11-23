@@ -5,7 +5,7 @@ const helmet = require("helmet");
 const passport = require("passport");
 const dbConnection = require("./config/database.config");
 const router = require("./routes");
-const { logger } = require("./middlewares");
+const { logger, errorHandler } = require("./middlewares");
 
 /**
  * -------------- GENERAL SETUP ----------------
@@ -49,6 +49,9 @@ app.use("/api", router);
 app.get("/api", (req, res, next) => {
   return res.json({ message: "Welcome to Express MVC Tuto API" });
 });
+// Register the error handler middleware
+// ERROR HANDLER MIDDLEWARE (Last middleware to use)
+app.use(errorHandler);
 
 /**
  * -------------- RUN SERVER ----------------
