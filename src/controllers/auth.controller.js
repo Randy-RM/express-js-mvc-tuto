@@ -101,24 +101,20 @@ Signin if user have an account
 and roles 
 --------------------------
 */
-async function signin(req, res) {
+async function signin(req, res, next) {
   const { email, password } = req.body;
 
   try {
     const user = await UserModel.findOne({ email: email });
 
     if (!user) {
-      return res
-        .status(404)
-        .json({ message: `User with this email "${email}" not found` });
+      throwError(404, `User with this email "${email}" not found`);
     }
 
     const passwordMatch = await user.isUserPassword(password);
 
     if (!passwordMatch) {
-      return res
-        .status(400)
-        .json({ message: `Invalid password for "${email}"` });
+      throwError(400, `Invalid password for "${email}"`);
     }
 
     const token = jwt.sign({ email: user.email }, process.env.JWT_SECRET, {
@@ -137,7 +133,7 @@ async function signin(req, res) {
       },
     });
   } catch (error) {
-    return res.status(500).json({ message: error.message });
+    next(error);
   }
 }
 
