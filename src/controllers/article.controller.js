@@ -139,16 +139,14 @@ Create and save a new article
 in the database
 --------------------------
 */
-async function createArticle(req, res) {
+async function createArticle(req, res, next) {
   const { id: userId } = req.user;
 
   try {
     const user = await UserModel.findById(userId);
 
     if (!user) {
-      return res
-        .status(404)
-        .json({ message: "This user not found in database" });
+      throwError(500, `Something went wrong`);
     }
 
     const article = { ...req.body, user };
@@ -156,7 +154,7 @@ async function createArticle(req, res) {
 
     return res.status(201).json({ message: "Article created" });
   } catch (error) {
-    return res.status(500).json({ message: error.message });
+    next(error);
   }
 }
 
