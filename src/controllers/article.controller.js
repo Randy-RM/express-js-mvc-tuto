@@ -23,7 +23,7 @@ async function getOneArticle(req, res, next) {
 
     return res.status(200).json(article);
   } catch (error) {
-    next(error);
+    return next(error);
   }
 }
 
@@ -71,7 +71,7 @@ async function getUserArticles(req, res, next) {
       data: articles,
     });
   } catch (error) {
-    next(error);
+    return next(error);
   }
 }
 
@@ -129,7 +129,7 @@ async function getAllArticles(req, res, next) {
       data: articles,
     });
   } catch (error) {
-    next(error);
+    return next(error);
   }
 }
 
@@ -154,7 +154,7 @@ async function createArticle(req, res, next) {
 
     return res.status(201).json({ message: "Article created" });
   } catch (error) {
-    next(error);
+    return next(error);
   }
 }
 
@@ -183,7 +183,7 @@ async function updateArticle(req, res, next) {
 
     return res.status(200).json({ message: "Article updated successfully" });
   } catch (error) {
-    next(error);
+    return next(error);
   }
 }
 
@@ -213,7 +213,7 @@ async function deleteArticle(req, res, next) {
 
     return res.status(200).json({ message: "Article deleted successfully" });
   } catch (error) {
-    next(error);
+    return next(error);
   }
 }
 

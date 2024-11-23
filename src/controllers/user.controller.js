@@ -25,7 +25,7 @@ async function getOneUser(req, res, next) {
 
     return res.status(200).json(user);
   } catch (error) {
-    next(error);
+    return next(error);
   }
 }
 
@@ -62,7 +62,7 @@ async function getAllUsers(req, res, next) {
       data: users,
     });
   } catch (error) {
-    next(error);
+    return next(error);
   }
 }
 
@@ -91,7 +91,7 @@ async function createUser(req, res, next) {
 
     return res.status(201).json({ message: "User created" });
   } catch (error) {
-    next(error);
+    return next(error);
   }
 }
 
@@ -120,7 +120,7 @@ async function updateUser(req, res, next) {
 
     return res.status(200).json({ message: "User updated successfully" });
   } catch (error) {
-    next(error);
+    return next(error);
   }
 }
 
@@ -150,7 +150,7 @@ async function deleteUser(req, res, next) {
 
     return res.status(200).json({ message: "User deleted successfully" });
   } catch (error) {
-    next(error);
+    return next(error);
   }
 }
 

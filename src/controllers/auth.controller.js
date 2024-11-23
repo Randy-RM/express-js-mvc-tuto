@@ -62,7 +62,7 @@ async function signup(req, res, next) {
 
     return res.status(201).json({ message: "User created" });
   } catch (error) {
-    next(error);
+    return next(error);
   }
 }
 
@@ -91,7 +91,7 @@ async function activateAccount(req, res, next) {
     return res.json({ message: "User account is activated" });
     // return res.redirect(`${process.env.CLIENT_HOST}${process.env.CLIENT_VERIFY}`);
   } catch (error) {
-    next(error);
+    return next(error);
   }
 }
 
@@ -133,7 +133,7 @@ async function signin(req, res, next) {
       },
     });
   } catch (error) {
-    next(error);
+    return next(error);
   }
 }
 
