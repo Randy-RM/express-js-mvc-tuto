@@ -1,6 +1,6 @@
 const bcrypt = require("bcrypt");
-const { UserModel } = require("../models/index.js");
-const { isAllowedToManipulate, isRoleExist } = require("../utils/index.js");
+const { UserModel } = require("../models");
+const { isAllowedToManipulate, isRoleExist } = require("../utils");
 
 /*
 --------------------------

@@ -1,5 +1,5 @@
-const { ArticleModel, UserModel } = require("../models/index.js");
-const { isAllowedToManipulate, throwError } = require("../utils/index.js");
+const { ArticleModel, UserModel } = require("../models");
+const { isAllowedToManipulate, throwError } = require("../utils");
 
 /*
 --------------------------
