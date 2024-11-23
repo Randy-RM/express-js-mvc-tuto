@@ -7,7 +7,7 @@ Retrieve one article from
 the database.
 --------------------------
 */
-async function getOneArticle(req, res) {
+async function getOneArticle(req, res, next) {
   const { articleId } = req.params;
 
   try {
@@ -18,14 +18,12 @@ async function getOneArticle(req, res) {
     });
 
     if (!article) {
-      return res
-        .status(404)
-        .json({ message: `Article with id "${articleId}" not found` });
+      throwError(404, `Article with id "${articleId}" not found`);
     }
 
     return res.status(200).json(article);
   } catch (error) {
-    return res.status(500).json({ message: error.message });
+    next(error);
   }
 }
 
