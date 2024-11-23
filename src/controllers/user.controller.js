@@ -35,7 +35,7 @@ Retrieve all users from
 the database.
 --------------------------
 */
-async function getAllUsers(req, res) {
+async function getAllUsers(req, res, next) {
   const { cursor, limit = 10 } = req.query;
   let query = {};
 
@@ -48,7 +48,7 @@ async function getAllUsers(req, res) {
     const users = await UserModel.find({ ...query }).limit(Number(limit));
 
     if (!users || users.length === 0) {
-      return res.status(404).json({ message: "Users not found" });
+      throwError(404, `Users not found`);
     }
 
     // Extract the next and previous cursor from the result
@@ -62,7 +62,7 @@ async function getAllUsers(req, res) {
       data: users,
     });
   } catch (error) {
-    return res.status(500).json({ message: error.message });
+    next(error);
   }
 }
 
