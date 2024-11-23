@@ -77,10 +77,17 @@ async function sendAccountActivationEmail(email, uniqueString, apiHostDomain) {
   });
 }
 
+function throwError(errorStatusCode, errorMessage) {
+  const error = new Error(`${errorMessage}`);
+  error.statusCode = errorStatusCode;
+  throw error;
+}
+
 module.exports = {
   getRoles: getRoles,
   isRoleExist: isRoleExist,
   isAllowedToManipulate: isAllowedToManipulate,
   randomStringGenerator: randomStringGenerator,
   sendAccountActivationEmail: sendAccountActivationEmail,
+  throwError: throwError,
 };
