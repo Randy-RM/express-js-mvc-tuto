@@ -72,16 +72,14 @@ Create and save a new user
 in the database
 --------------------------
 */
-async function createUser(req, res) {
+async function createUser(req, res, next) {
   const { username, email, password, role } = req.body;
 
   try {
     const hashedPassword = await bcrypt.hash(password, 10);
 
     if (!isRoleExist(role) && role != undefined) {
-      return res
-        .status(422)
-        .json({ message: `The role "${role}" does not exist` });
+      throwError(422, `The role "${role}" does not exist`);
     }
 
     await UserModel.create({
@@ -93,7 +91,7 @@ async function createUser(req, res) {
 
     return res.status(201).json({ message: "User created" });
   } catch (error) {
-    return res.status(500).json({ message: error.message });
+    next(error);
   }
 }
 
@@ -103,7 +101,7 @@ Update a user by the id
 in the request
 --------------------------
 */
-async function updateUser(req, res) {
+async function updateUser(req, res, next) {
   const { userId } = req.params;
   const { user: connectedUser } = req;
 
@@ -111,20 +109,18 @@ async function updateUser(req, res) {
     const user = await UserModel.findById(userId);
 
     if (!user) {
-      return res.status(404).json({ message: "User not found" });
+      throwError(404, `User with id "${userId}" not found`);
     }
 
     if (!isAllowedToManipulate(user.id, connectedUser)) {
-      return res
-        .status(401)
-        .json({ message: "Unauthorized to manipulate resource" });
+      throwError(401, `Unauthorized to manipulate resource`);
     }
 
     await user.updateOne({ ...req.body });
 
     return res.status(200).json({ message: "User updated successfully" });
   } catch (error) {
-    return res.status(500).json({ message: error.message });
+    next(error);
   }
 }
 
@@ -135,7 +131,7 @@ the specified id
 in the request
 --------------------------
 */
-async function deleteUser(req, res) {
+async function deleteUser(req, res, next) {
   const { userId } = req.params;
   const { user: connectedUser } = req;
 
@@ -143,20 +139,18 @@ async function deleteUser(req, res) {
     const user = await UserModel.findById(userId);
 
     if (!user) {
-      return res.status(404).json({ message: "User not found" });
+      throwError(404, `User with id "${userId}" not found`);
     }
 
     if (!isAllowedToManipulate(user.id, connectedUser)) {
-      return res
-        .status(401)
-        .json({ message: "Unauthorized to manipulate resource" });
+      throwError(401, `Unauthorized to manipulate resource`);
     }
 
     await user.deleteOne();
 
     return res.status(200).json({ message: "User deleted successfully" });
   } catch (error) {
-    return res.status(500).json({ message: error.message });
+    next(error);
   }
 }
 
