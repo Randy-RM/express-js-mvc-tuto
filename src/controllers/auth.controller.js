@@ -71,7 +71,7 @@ async function signup(req, res, next) {
 Activate user account
 --------------------------
 */
-async function activateAccount(req, res) {
+async function activateAccount(req, res, next) {
   // getting the string
   const { uniqueString } = req.params;
   const filter = { uniqueString: uniqueString };
@@ -84,14 +84,14 @@ async function activateAccount(req, res) {
     });
 
     if (!user) {
-      throw new Error("problems arising from verification");
+      throwError(500, `problems arising from verification`);
     }
 
     console.log("User account is activated");
     return res.json({ message: "User account is activated" });
     // return res.redirect(`${process.env.CLIENT_HOST}${process.env.CLIENT_VERIFY}`);
   } catch (error) {
-    return res.status(500).json({ message: error.message });
+    next(error);
   }
 }
 
