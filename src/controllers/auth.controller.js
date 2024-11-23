@@ -3,6 +3,7 @@ const jwt = require("jsonwebtoken");
 const { UserModel } = require("../models");
 const {
   randomStringGenerator,
+  throwError,
   /**
    * to be uncommented
    * to set up mail sending,
@@ -17,7 +18,7 @@ Create and save a new user
 in the database
 --------------------------
 */
-async function signup(req, res) {
+async function signup(req, res, next) {
   const { adminRouteParams } = req.params;
   const { username, email, password } = req.body;
   /**
@@ -61,7 +62,7 @@ async function signup(req, res) {
 
     return res.status(201).json({ message: "User created" });
   } catch (error) {
-    return res.status(500).json({ message: error.message });
+    next(error);
   }
 }
 
