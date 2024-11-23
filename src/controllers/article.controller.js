@@ -1,5 +1,5 @@
 const { ArticleModel, UserModel } = require("../models/index.js");
-const { isAllowedToManipulate } = require("../utils/index.js");
+const { isAllowedToManipulate, throwError } = require("../utils/index.js");
 
 /*
 --------------------------
@@ -83,7 +83,7 @@ Retrieve all articles from
 the database.
 --------------------------
 */
-async function getAllArticles(req, res) {
+async function getAllArticles(req, res, next) {
   const {
     cursor,
     limit = 10,
@@ -116,7 +116,7 @@ async function getAllArticles(req, res) {
       .limit(Number(limit));
 
     if (!articles || articles.length === 0) {
-      return res.status(404).json({ message: "Articles not found" });
+      throwError(404, "Articles not found");
     }
 
     // Extract the next and previous cursor from the result
@@ -131,7 +131,7 @@ async function getAllArticles(req, res) {
       data: articles,
     });
   } catch (error) {
-    return res.status(500).json({ message: error.message });
+    next(error);
   }
 }
 
