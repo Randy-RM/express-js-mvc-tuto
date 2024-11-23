@@ -1,6 +1,6 @@
 const bcrypt = require("bcrypt");
 const { UserModel } = require("../models");
-const { isAllowedToManipulate, isRoleExist } = require("../utils");
+const { isAllowedToManipulate, isRoleExist, throwError } = require("../utils");
 
 /*
 --------------------------
@@ -8,7 +8,7 @@ Retrieve one user from
 the database.
 --------------------------
 */
-async function getOneUser(req, res) {
+async function getOneUser(req, res, next) {
   const { userId } = req.params;
   const { user: connectedUser } = req;
 
@@ -16,18 +16,16 @@ async function getOneUser(req, res) {
     const user = await UserModel.findById(userId);
 
     if (!user) {
-      return res.status(404).json({ message: "User not found" });
+      throwError(404, `User with id "${userId}" not found`);
     }
 
     if (!isAllowedToManipulate(user.id, connectedUser)) {
-      return res
-        .status(401)
-        .json({ message: "Unauthorized to manipulate resource" });
+      throwError(401, `Unauthorized to manipulate resource`);
     }
 
     return res.status(200).json(user);
   } catch (error) {
-    return res.status(500).json({ message: error.message });
+    next(error);
   }
 }
 
