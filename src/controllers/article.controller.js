@@ -173,7 +173,7 @@ async function createArticle(req, res, next) {
 
     return res.status(201).json({
       success: true,
-      status: 200,
+      status: 201,
       message: `Article created`,
       data: article,
     });
@@ -238,7 +238,11 @@ async function deleteArticle(req, res, next) {
   const { user: connectedUser } = req;
 
   try {
-    const article = await ArticleModel.findById(articleId);
+    const article = await ArticleModel.findById(articleId).populate({
+      path: "user",
+      model: "User",
+      select: { _id: 0, username: 1, email: 1 },
+    });
 
     if (!article) {
       throwError(404, `Article with id "${articleId}" not found`);
@@ -250,7 +254,12 @@ async function deleteArticle(req, res, next) {
 
     await article.deleteOne();
 
-    return res.status(200).json({ message: "Article deleted successfully" });
+    return res.status(200).json({
+      success: true,
+      status: 200,
+      message: `Article deleted successfully`,
+      data: article,
+    });
   } catch (error) {
     return next(error);
   }
