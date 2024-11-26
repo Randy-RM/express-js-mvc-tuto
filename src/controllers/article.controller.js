@@ -70,10 +70,15 @@ async function getUserArticles(req, res, next) {
       articles.length > 0 ? articles[articles.length - 1]._id : null;
 
     return res.status(200).json({
-      nextCursor,
-      prevCursor,
-      totalResults: articles.length,
-      data: articles,
+      success: true,
+      status: 200,
+      message: `Articles found`,
+      data: {
+        nextCursor,
+        prevCursor,
+        totalResults: articles.length,
+        data: articles,
+      },
     });
   } catch (error) {
     return next(error);
