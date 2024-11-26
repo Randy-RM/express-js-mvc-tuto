@@ -21,7 +21,12 @@ async function getOneArticle(req, res, next) {
       throwError(404, `Article with id "${articleId}" not found`);
     }
 
-    return res.status(200).json(article);
+    return res.status(200).json({
+      success: true,
+      status: 200,
+      message: `Article found`,
+      data: article,
+    });
   } catch (error) {
     return next(error);
   }
