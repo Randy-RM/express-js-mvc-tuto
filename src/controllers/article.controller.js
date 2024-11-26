@@ -164,10 +164,19 @@ async function createArticle(req, res, next) {
       throwError(500, `Something went wrong`);
     }
 
-    const article = { ...req.body, user };
-    await ArticleModel.create(article);
+    let article = await ArticleModel.create({ ...req.body, user });
+    article = await article.populate({
+      path: "user",
+      model: "User",
+      select: { _id: 0, username: 1, email: 1 },
+    });
 
-    return res.status(201).json({ message: "Article created" });
+    return res.status(201).json({
+      success: true,
+      status: 200,
+      message: `Article created`,
+      data: article,
+    });
   } catch (error) {
     return next(error);
   }
