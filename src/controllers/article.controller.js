@@ -193,7 +193,7 @@ async function updateArticle(req, res, next) {
   const { user: connectedUser } = req;
 
   try {
-    const article = await ArticleModel.findById(articleId);
+    let article = await ArticleModel.findById(articleId);
 
     if (!article) {
       throwError(404, `Article with id "${articleId}" not found`);
@@ -203,9 +203,24 @@ async function updateArticle(req, res, next) {
       throwError(401, `Unauthorized to manipulate resource`);
     }
 
-    await article.updateOne({ ...req.body });
+    article = await ArticleModel.findByIdAndUpdate(
+      articleId,
+      {
+        ...req.body,
+      },
+      { new: true }
+    ).populate({
+      path: "user",
+      model: "User",
+      select: { _id: 0, username: 1, email: 1 },
+    });
 
-    return res.status(200).json({ message: "Article updated successfully" });
+    return res.status(200).json({
+      success: true,
+      status: 200,
+      message: `Article updated successfully`,
+      data: article,
+    });
   } catch (error) {
     return next(error);
   }
