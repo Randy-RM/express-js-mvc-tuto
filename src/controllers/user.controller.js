@@ -63,7 +63,7 @@ async function getAllUsers(req, res, next) {
     return res.status(200).json({
       success: true,
       status: 200,
-      message: `Article found`,
+      message: `Users found`,
       data: {
         nextCursor,
         prevCursor,
