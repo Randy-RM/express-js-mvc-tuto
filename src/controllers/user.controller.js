@@ -23,7 +23,12 @@ async function getOneUser(req, res, next) {
       throwError(401, `Unauthorized to manipulate resource`);
     }
 
-    return res.status(200).json(user);
+    return res.status(200).json({
+      success: true,
+      status: 200,
+      message: `Article found`,
+      data: user,
+    });
   } catch (error) {
     return next(error);
   }
