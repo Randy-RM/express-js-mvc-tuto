@@ -92,14 +92,31 @@ async function createUser(req, res, next) {
       throwError(422, `The role "${role}" does not exist`);
     }
 
-    await UserModel.create({
+    const user = await UserModel.create({
       username,
       email,
       password: hashedPassword,
+      isUserActive: true,
       role: role || undefined,
-    });
+    })
+      .then((user) => {
+        return {
+          username: user.username,
+          email: user.email,
+          isUserActive: user.isUserActive,
+          role: user.role,
+        };
+      })
+      .catch((error) => {
+        throwError(422, `User already exists with email "${email}"`);
+      });
 
-    return res.status(201).json({ message: "User created" });
+    return res.status(201).json({
+      success: true,
+      status: 200,
+      message: `User created`,
+      data: user,
+    });
   } catch (error) {
     return next(error);
   }
