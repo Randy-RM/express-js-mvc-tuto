@@ -61,10 +61,15 @@ async function getAllUsers(req, res, next) {
     const nextCursor = users.length > 0 ? users[users.length - 1]._id : null;
 
     return res.status(200).json({
-      nextCursor,
-      prevCursor,
-      totalResults: users.length,
-      data: users,
+      success: true,
+      status: 200,
+      message: `Article found`,
+      data: {
+        nextCursor,
+        prevCursor,
+        totalResults: users.length,
+        data: users,
+      },
     });
   } catch (error) {
     return next(error);
