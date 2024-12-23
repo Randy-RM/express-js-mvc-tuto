@@ -113,7 +113,7 @@ async function createUser(req, res, next) {
 
     return res.status(201).json({
       success: true,
-      status: 200,
+      status: 201,
       message: `User created`,
       data: user,
     });
@@ -133,7 +133,7 @@ async function updateUser(req, res, next) {
   const { user: connectedUser } = req;
 
   try {
-    const user = await UserModel.findById(userId);
+    let user = await UserModel.findById(userId);
 
     if (!user) {
       throwError(404, `User with id "${userId}" not found`);
@@ -143,9 +143,21 @@ async function updateUser(req, res, next) {
       throwError(401, `Unauthorized to manipulate resource`);
     }
 
-    await user.updateOne({ ...req.body });
+    user = await UserModel.findByIdAndUpdate(
+      userId,
+      { ...req.body },
+      {
+        select: { _id: 1, username: 1, email: 1, role: 1, isUserActive: 1 },
+        new: true,
+      }
+    );
 
-    return res.status(200).json({ message: "User updated successfully" });
+    return res.status(200).json({
+      success: true,
+      status: 200,
+      message: `User updated successfully`,
+      data: user,
+    });
   } catch (error) {
     return next(error);
   }
