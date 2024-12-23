@@ -26,7 +26,7 @@ async function getOneUser(req, res, next) {
     return res.status(200).json({
       success: true,
       status: 200,
-      message: `Article found`,
+      message: `User found`,
       data: user,
     });
   } catch (error) {
