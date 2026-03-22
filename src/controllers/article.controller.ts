@@ -52,14 +52,10 @@ export async function getAllArticles(
 ): Promise<void> {
   try {
     const { cursor, limit = "10", isPublished, isArchived } = req.query;
-    const data = await articleService.findAll(
-      cursor as string | undefined,
-      Number(limit),
-      {
-        isPublished: isPublished === "true" ? true : undefined,
-        isArchived: isArchived === "true" ? true : undefined,
-      }
-    );
+    const data = await articleService.findAll(cursor as string | undefined, Number(limit), {
+      isPublished: isPublished === "true" ? true : undefined,
+      isArchived: isArchived === "true" ? true : undefined,
+    });
 
     res.status(200).json({
       success: true,
@@ -100,11 +96,13 @@ export async function updateArticle(
 ): Promise<void> {
   try {
     const { title, summary, content, isPublished, isArchived } = req.body;
-    const article = await articleService.update(
-      String(req.params.articleId),
-      req.user as IUser,
-      { title, summary, content, isPublished, isArchived }
-    );
+    const article = await articleService.update(String(req.params.articleId), req.user as IUser, {
+      title,
+      summary,
+      content,
+      isPublished,
+      isArchived,
+    });
 
     res.status(200).json({
       success: true,

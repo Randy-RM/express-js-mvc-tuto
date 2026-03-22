@@ -4,7 +4,10 @@ import { authService } from "../services";
 export async function signup(req: Request, res: Response, next: NextFunction): Promise<void> {
   try {
     const { username, email, password } = req.body;
-    await authService.signup({ username, email, password }, req.params.adminRouteParams as string | undefined);
+    await authService.signup(
+      { username, email, password },
+      req.params.adminRouteParams as string | undefined
+    );
 
     res.status(201).json({
       success: true,
