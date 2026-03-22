@@ -4,8 +4,10 @@ import cors from "cors";
 import helmet from "helmet";
 import passport from "passport";
 import rateLimit from "express-rate-limit";
+import swaggerUi from "swagger-ui-express";
 import dbConnection from "./config/database.config";
 import configurePassport from "./config/passport.config";
+import swaggerSpec from "./config/swagger.config";
 import router from "./routes";
 import { logger, errorHandler } from "./middlewares";
 
@@ -41,6 +43,7 @@ configurePassport(passport);
 app.use(passport.initialize());
 
 app.use(logger);
+app.use("/api-docs", swaggerUi.serve, swaggerUi.setup(swaggerSpec));
 app.get("/api", (_req: Request, res: Response) => {
   res.json({ message: "Welcome to Express MVC Tuto API" });
 });

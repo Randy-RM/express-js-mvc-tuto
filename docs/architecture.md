@@ -10,7 +10,8 @@ src/
 ├── config/
 │   ├── database.config.ts     # MongoDB connection via Mongoose
 │   ├── passport.config.ts     # Passport JWT strategy configuration
-│   └── paths.config.ts        # Base URI constants for routes
+│   ├── paths.config.ts        # Base URI constants for routes
+│   └── swagger.config.ts      # Swagger/OpenAPI specification configuration
 ├── constants/
 │   └── index.ts               # Application constants (ROLES enum)
 ├── controllers/
@@ -46,6 +47,11 @@ src/
 │   ├── randomString.util.ts   # Secure random string generator
 │   ├── throwError.util.ts     # Custom error throwing helper
 │   └── index.ts               # Barrel export
+├── docs/
+│   └── swagger/
+│       ├── auth.swagger.ts    # Swagger annotations for auth endpoints
+│       ├── users.swagger.ts   # Swagger annotations for user endpoints
+│       └── articles.swagger.ts# Swagger annotations for article endpoints
 └── validators/
     └── index.ts               # Request validation schemas (express-validator)
 ```

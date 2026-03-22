@@ -33,6 +33,7 @@ yarn dev
 ```
 
 The API will be available at `http://localhost:8000/api`.
+The Swagger documentation will be available at `http://localhost:8000/api-docs`.
 
 ---
 
