@@ -1,15 +1,18 @@
-const { Schema } = require("mongoose");
-const dbConnection = require("../config/database.config");
+import { Schema } from "mongoose";
+import dbConnection from "../config/database.config";
+import { IArticle } from "../types";
 
-const ArticleSchema = new Schema(
+const ArticleSchema = new Schema<IArticle>(
   {
     title: {
       type: String,
       required: [true, "Please enter title"],
+      trim: true,
     },
     summary: {
       type: String,
-      required: [true, "Please enter content"],
+      required: [true, "Please enter summary"],
+      trim: true,
     },
     content: {
       type: String,
@@ -19,7 +22,10 @@ const ArticleSchema = new Schema(
       type: Boolean,
       default: false,
     },
-    isArchived: { type: Boolean, default: false },
+    isArchived: {
+      type: Boolean,
+      default: false,
+    },
     user: {
       type: Schema.Types.ObjectId,
       ref: "User",
@@ -31,6 +37,6 @@ const ArticleSchema = new Schema(
   }
 );
 
-const ArticleModel = dbConnection.model("Article", ArticleSchema);
+const ArticleModel = dbConnection.model<IArticle>("Article", ArticleSchema);
 
-module.exports = ArticleModel;
+export default ArticleModel;
