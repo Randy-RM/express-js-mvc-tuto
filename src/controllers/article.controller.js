@@ -164,7 +164,8 @@ async function createArticle(req, res, next) {
       throwError(500, `Something went wrong`);
     }
 
-    let article = await ArticleModel.create({ ...req.body, user });
+    const { title, summary, content } = req.body;
+    let article = await ArticleModel.create({ title, summary, content, user });
     article = await article.populate({
       path: "user",
       model: "User",
@@ -200,14 +201,13 @@ async function updateArticle(req, res, next) {
     }
 
     if (!isAllowedToManipulate(article.user, connectedUser)) {
-      throwError(401, `Unauthorized to manipulate resource`);
+      throwError(403, `Forbidden: not authorized to manipulate this resource`);
     }
 
+    const { title, summary, content, isPublished, isArchived } = req.body;
     article = await ArticleModel.findByIdAndUpdate(
       articleId,
-      {
-        ...req.body,
-      },
+      { title, summary, content, isPublished, isArchived },
       { new: true }
     ).populate({
       path: "user",
@@ -249,7 +249,7 @@ async function deleteArticle(req, res, next) {
     }
 
     if (!isAllowedToManipulate(article.user, connectedUser)) {
-      throwError(401, `Unauthorized to manipulate resource`);
+      throwError(403, `Forbidden: not authorized to manipulate this resource`);
     }
 
     await article.deleteOne();

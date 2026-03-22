@@ -11,7 +11,7 @@ const {
 } = require("../controllers/article.controller.js");
 const { authorize } = require("../middlewares");
 
-const { ROLES } = require("../constant");
+const { ROLES } = require("../constants");
 
 const articleRouter = Router();
 

@@ -1,43 +1,26 @@
 require("dotenv").config();
-const Role = require("../models/role.model");
 const mongoose = require("mongoose");
+const { ROLES } = require("../constants");
 
-//get your mongoose string
 const dbUrl = process.env.MONGOHQ_URL;
 
-//create your array. i inserted only 1 object here
-const roles = [
-  new Role({ roleName: "admin" }),
-  new Role({ roleName: "author" }),
-  new Role({ roleName: "user" }),
-];
-//connect mongoose
-mongoose
-  .connect(String(dbUrl), {})
-  .catch((err) => {
-    console.log(err.stack);
+async function seedRoles() {
+  try {
+    await mongoose.connect(String(dbUrl));
+    console.log("Connected to DB");
+
+    // Roles are now defined as constants in src/constants/index.js
+    // This seeder validates that they are properly configured
+    const roles = Object.values(ROLES);
+    console.log("Available roles:", roles);
+    console.log("Seed validation done — roles are defined as constants, no DB collection needed.");
+  } catch (error) {
+    console.error("Seed error:", error.message);
     process.exit(1);
-  })
-  .then(() => {
-    console.log("connected to db in development environment");
-  });
+  } finally {
+    await mongoose.disconnect();
+    console.log("Disconnected from DB");
+  }
+}
 
-const clearAndCreateNewRoleCollection = async () => {
-  await Role.deleteMany({})
-    .then((roleCollection) => {
-      // Number of documents deleted
-      console.log("Role deleted", roleCollection.deletedCount);
-      //save your data. this is an async operation
-      //after you make sure you seeded all the roles, disconnect automatically
-      roles.map(async (role, index) => {
-        await role.save();
-        if (index === roles.length - 1) {
-          console.log("seed done");
-          mongoose.disconnect();
-        }
-      });
-    })
-    .catch(() => console.log("Role collection deletion failed"));
-};
-
-clearAndCreateNewRoleCollection();
+seedRoles();

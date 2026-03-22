@@ -20,7 +20,7 @@ async function getOneUser(req, res, next) {
     }
 
     if (!isAllowedToManipulate(user.id, connectedUser)) {
-      throwError(401, `Unauthorized to manipulate resource`);
+      throwError(403, `Forbidden: not authorized to manipulate this resource`);
     }
 
     return res.status(200).json({
@@ -88,7 +88,7 @@ async function createUser(req, res, next) {
   try {
     const hashedPassword = await bcrypt.hash(password, 10);
 
-    if (!isRoleExist(role) && role != undefined) {
+    if (!isRoleExist(role) && role !== undefined) {
       throwError(422, `The role "${role}" does not exist`);
     }
 
@@ -98,18 +98,7 @@ async function createUser(req, res, next) {
       password: hashedPassword,
       isUserActive: true,
       role: role || undefined,
-    })
-      .then((user) => {
-        return {
-          username: user.username,
-          email: user.email,
-          isUserActive: user.isUserActive,
-          role: user.role,
-        };
-      })
-      .catch((error) => {
-        throwError(422, `User already exists with email "${email}"`);
-      });
+    });
 
     return res.status(201).json({
       success: true,
@@ -140,12 +129,13 @@ async function updateUser(req, res, next) {
     }
 
     if (!isAllowedToManipulate(user.id, connectedUser)) {
-      throwError(401, `Unauthorized to manipulate resource`);
+      throwError(403, `Forbidden: not authorized to manipulate this resource`);
     }
 
+    const { username, email, role } = req.body;
     user = await UserModel.findByIdAndUpdate(
       userId,
-      { ...req.body },
+      { username, email, role },
       {
         select: { _id: 1, username: 1, email: 1, role: 1, isUserActive: 1 },
         new: true,
@@ -182,7 +172,7 @@ async function deleteUser(req, res, next) {
     }
 
     if (!isAllowedToManipulate(user.id, connectedUser)) {
-      throwError(401, `Unauthorized to manipulate resource`);
+      throwError(403, `Forbidden: not authorized to manipulate this resource`);
     }
 
     await user.deleteOne();

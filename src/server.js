@@ -22,13 +22,6 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 app.use(cors(corsOptions));
 app.use(helmet());
-app.use((req, res, next) => {
-  res.header(
-    "Access-Control-Allow-Headers",
-    "x-access-token, Origin, Content-Type, Accept"
-  );
-  next();
-});
 
 /**
  * -------------- PASSPORT AUTHENTICATION ----------------
@@ -39,18 +32,13 @@ require("./config/passport.config")(passport);
 app.use(passport.initialize());
 
 /**
- * -------------- ROUTE ----------------
+ * -------------- ROUTES ----------------
  */
-// logger middleware
 app.use(logger);
-// Imports all of the routes
-// from ./routes/index
-app.use("/api", router);
-app.get("/api", (req, res, next) => {
+app.get("/api", (req, res) => {
   return res.json({ message: "Welcome to Express MVC Tuto API" });
 });
-// Register the error handler middleware
-// ERROR HANDLER MIDDLEWARE (Last middleware to use)
+app.use("/api", router);
 app.use(errorHandler);
 
 /**

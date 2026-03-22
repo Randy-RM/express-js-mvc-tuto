@@ -6,10 +6,10 @@ function authorize(roles) {
 
     try {
       if (roles.includes(role)) {
-        return next(); // User is authorized, proceed to the next middleware or route handler
+        return next();
       }
 
-      throwError(403, `You are not authorize to perform this action`);
+      throwError(403, "Forbidden: insufficient permissions");
     } catch (error) {
       return next(error);
     }

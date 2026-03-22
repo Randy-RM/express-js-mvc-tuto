@@ -60,7 +60,11 @@ async function signup(req, res, next) {
     //   apiHostDomain
     // );
 
-    return res.status(201).json({ message: "User created" });
+    return res.status(201).json({
+      success: true,
+      status: 201,
+      message: "User created",
+    });
   } catch (error) {
     return next(error);
   }
@@ -88,7 +92,11 @@ async function activateAccount(req, res, next) {
     }
 
     console.log("User account is activated");
-    return res.json({ message: "User account is activated" });
+    return res.status(200).json({
+      success: true,
+      status: 200,
+      message: "User account is activated",
+    });
     // return res.redirect(`${process.env.CLIENT_HOST}${process.env.CLIENT_VERIFY}`);
   } catch (error) {
     return next(error);
@@ -121,7 +129,9 @@ async function signin(req, res, next) {
       expiresIn: "1h",
     });
 
-    return res.json({
+    return res.status(200).json({
+      success: true,
+      status: 200,
       message: "Logged in successfully",
       data: {
         user: {
@@ -129,7 +139,7 @@ async function signin(req, res, next) {
           email: user.email,
           userRole: user.role,
         },
-        token: token,
+        token,
       },
     });
   } catch (error) {
@@ -145,9 +155,17 @@ Logout if user is logged
 async function logout(req, res) {
   req.logout(function (error) {
     if (error) {
-      return res.status(500).json({ message: error.message });
+      return res.status(500).json({
+        success: false,
+        status: 500,
+        message: error.message,
+      });
     }
-    return res.send("User is logout");
+    return res.status(200).json({
+      success: true,
+      status: 200,
+      message: "User is logged out",
+    });
   });
 }
 

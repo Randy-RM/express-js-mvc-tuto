@@ -1,7 +1,7 @@
 const bcrypt = require("bcrypt");
 const { Schema } = require("mongoose");
 const dbConnection = require("../config/database.config");
-const { ROLES } = require("../constant");
+const { ROLES } = require("../constants");
 
 const validRoles = [ROLES.USER, ROLES.MODERATOR, ROLES.ADMIN];
 
@@ -32,6 +32,15 @@ const UserSchema = new Schema({
     default: "user",
   },
 });
+
+// Hide sensitive fields when converting to JSON
+UserSchema.methods.toJSON = function () {
+  const user = this.toObject();
+  delete user.password;
+  delete user.uniqueString;
+  delete user.__v;
+  return user;
+};
 
 UserSchema.methods.isUserPassword = async function (password) {
   const user = this;

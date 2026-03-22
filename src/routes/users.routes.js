@@ -10,7 +10,7 @@ const {
 } = require("../controllers/user.controller.js");
 const { authorize } = require("../middlewares");
 
-const { ROLES } = require("../constant");
+const { ROLES } = require("../constants");
 
 const userRouter = Router();
 
