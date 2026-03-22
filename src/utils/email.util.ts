@@ -1,10 +1,10 @@
-const nodemailer = require("nodemailer");
-const { authBaseURI, activateAccountURI } = require("../config/paths.config");
+import nodemailer from "nodemailer";
+import { authBaseURI, activateAccountURI } from "../config/paths.config";
 
 function createTransport() {
   if (process.env.NODE_ENV === "development") {
     return nodemailer.createTransport({
-      service: process.env.NODEMAILER_SERVICE,
+      host: "localhost",
       port: 1025,
     });
   }
@@ -18,7 +18,11 @@ function createTransport() {
   });
 }
 
-async function sendAccountActivationEmail(email, uniqueString, apiHostDomain) {
+export async function sendAccountActivationEmail(
+  email: string,
+  uniqueString: string,
+  apiHostDomain: string
+): Promise<void> {
   const transport = createTransport();
   const sender = "MiniBlog My Company <info@mini-blog.org>";
 
@@ -36,5 +40,3 @@ async function sendAccountActivationEmail(email, uniqueString, apiHostDomain) {
     console.error("Confirmation email not sent", error);
   }
 }
-
-module.exports = sendAccountActivationEmail;
