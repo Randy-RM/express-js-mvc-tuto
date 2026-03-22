@@ -1,23 +1,10 @@
 import { Request, Response, NextFunction } from "express";
-import bcrypt from "bcrypt";
-import { UserModel } from "../models";
-import { isAllowedToManipulate, isRoleExist, throwError } from "../utils";
+import { userService } from "../services";
 import { IUser } from "../types";
 
 export async function getOneUser(req: Request, res: Response, next: NextFunction): Promise<void> {
-  const { userId } = req.params;
-  const connectedUser = req.user as IUser;
-
   try {
-    const user = await UserModel.findById(userId);
-
-    if (!user) {
-      throwError(404, `User with id "${userId}" not found`);
-    }
-
-    if (!isAllowedToManipulate(user!.id, connectedUser)) {
-      throwError(403, "Forbidden: not authorized to manipulate this resource");
-    }
+    const user = await userService.findById(String(req.params.userId), req.user as IUser);
 
     res.status(200).json({
       success: true,
@@ -31,33 +18,15 @@ export async function getOneUser(req: Request, res: Response, next: NextFunction
 }
 
 export async function getAllUsers(req: Request, res: Response, next: NextFunction): Promise<void> {
-  const { cursor, limit = "10" } = req.query;
-  let query: Record<string, unknown> = {};
-
-  if (cursor) {
-    query = { _id: { $gt: cursor } };
-  }
-
   try {
-    const users = await UserModel.find(query).limit(Number(limit));
-
-    if (!users || users.length === 0) {
-      throwError(404, "Users not found");
-    }
-
-    const prevCursor = cursor && users.length > 0 ? users[0]._id : null;
-    const nextCursor = users.length > 0 ? users[users.length - 1]._id : null;
+    const { cursor, limit = "10" } = req.query;
+    const data = await userService.findAll(cursor as string | undefined, Number(limit));
 
     res.status(200).json({
       success: true,
       status: 200,
       message: "Users found",
-      data: {
-        nextCursor,
-        prevCursor,
-        totalResults: users.length,
-        data: users,
-      },
+      data,
     });
   } catch (error) {
     next(error);
@@ -65,22 +34,9 @@ export async function getAllUsers(req: Request, res: Response, next: NextFunctio
 }
 
 export async function createUser(req: Request, res: Response, next: NextFunction): Promise<void> {
-  const { username, email, password, role } = req.body;
-
   try {
-    const hashedPassword = await bcrypt.hash(password, 12);
-
-    if (role !== undefined && !isRoleExist(role)) {
-      throwError(422, `The role "${role}" does not exist`);
-    }
-
-    const user = await UserModel.create({
-      username,
-      email,
-      password: hashedPassword,
-      isUserActive: true,
-      role: role || undefined,
-    });
+    const { username, email, password, role } = req.body;
+    const user = await userService.create({ username, email, password, role });
 
     res.status(201).json({
       success: true,
@@ -94,29 +50,13 @@ export async function createUser(req: Request, res: Response, next: NextFunction
 }
 
 export async function updateUser(req: Request, res: Response, next: NextFunction): Promise<void> {
-  const { userId } = req.params;
-  const connectedUser = req.user as IUser;
-
   try {
-    const existingUser = await UserModel.findById(userId);
-
-    if (!existingUser) {
-      throwError(404, `User with id "${userId}" not found`);
-    }
-
-    if (!isAllowedToManipulate(existingUser!.id, connectedUser)) {
-      throwError(403, "Forbidden: not authorized to manipulate this resource");
-    }
-
     const { username, email, role } = req.body;
-    const user = await UserModel.findByIdAndUpdate(
-      userId,
-      { username, email, role },
-      {
-        select: { _id: 1, username: 1, email: 1, role: 1, isUserActive: 1 },
-        new: true,
-      }
-    );
+    const user = await userService.update(String(req.params.userId), req.user as IUser, {
+      username,
+      email,
+      role,
+    });
 
     res.status(200).json({
       success: true,
@@ -130,21 +70,8 @@ export async function updateUser(req: Request, res: Response, next: NextFunction
 }
 
 export async function deleteUser(req: Request, res: Response, next: NextFunction): Promise<void> {
-  const { userId } = req.params;
-  const connectedUser = req.user as IUser;
-
   try {
-    const user = await UserModel.findById(userId);
-
-    if (!user) {
-      throwError(404, `User with id "${userId}" not found`);
-    }
-
-    if (!isAllowedToManipulate(user!.id, connectedUser)) {
-      throwError(403, "Forbidden: not authorized to manipulate this resource");
-    }
-
-    await user!.deleteOne();
+    await userService.delete(String(req.params.userId), req.user as IUser);
 
     res.status(200).json({
       success: true,
@@ -163,11 +90,12 @@ export async function deleteAllUsers(
   next: NextFunction
 ): Promise<void> {
   try {
-    const result = await UserModel.deleteMany({});
+    const deletedCount = await userService.deleteAll();
+
     res.status(200).json({
       success: true,
       status: 200,
-      message: `${result.deletedCount} users deleted`,
+      message: `${deletedCount} users deleted`,
       data: {},
     });
   } catch (error) {

@@ -1,26 +1,10 @@
 import { Request, Response, NextFunction } from "express";
-import bcrypt from "bcrypt";
-import jwt from "jsonwebtoken";
-import { UserModel } from "../models";
-import { randomStringGenerator, throwError } from "../utils";
+import { authService } from "../services";
 
 export async function signup(req: Request, res: Response, next: NextFunction): Promise<void> {
-  const { adminRouteParams } = req.params;
-  const { username, email, password } = req.body;
-  const adminSecret = process.env.ADMIN_SECRET_SIGNUP_PARAMS_ROUTE;
-  const userRole = adminRouteParams && adminRouteParams === adminSecret ? "admin" : "user";
-
   try {
-    const hashedPassword = await bcrypt.hash(password, 12);
-
-    await UserModel.create({
-      username,
-      email,
-      password: hashedPassword,
-      uniqueString: randomStringGenerator(),
-      role: userRole,
-      isUserActive: true,
-    });
+    const { username, email, password } = req.body;
+    await authService.signup({ username, email, password }, req.params.adminRouteParams as string | undefined);
 
     res.status(201).json({
       success: true,
@@ -37,18 +21,8 @@ export async function activateAccount(
   res: Response,
   next: NextFunction
 ): Promise<void> {
-  const { uniqueString } = req.params;
-
   try {
-    const user = await UserModel.findOneAndUpdate(
-      { uniqueString },
-      { isUserActive: true },
-      { returnOriginal: false }
-    );
-
-    if (!user) {
-      throwError(400, "Invalid activation link");
-    }
+    await authService.activateAccount(String(req.params.uniqueString));
 
     res.status(200).json({
       success: true,
@@ -61,24 +35,9 @@ export async function activateAccount(
 }
 
 export async function signin(req: Request, res: Response, next: NextFunction): Promise<void> {
-  const { email, password } = req.body;
-
   try {
-    const user = await UserModel.findOne({ email });
-
-    if (!user) {
-      throwError(401, "Invalid email or password");
-    }
-
-    const passwordMatch = await user!.isUserPassword(password);
-
-    if (!passwordMatch) {
-      throwError(401, "Invalid email or password");
-    }
-
-    const token = jwt.sign({ email: user!.email }, process.env.JWT_SECRET || "", {
-      expiresIn: "1h",
-    });
+    const { email, password } = req.body;
+    const result = await authService.signin(email, password);
 
     res.status(200).json({
       success: true,
@@ -86,11 +45,11 @@ export async function signin(req: Request, res: Response, next: NextFunction): P
       message: "Logged in successfully",
       data: {
         user: {
-          username: user!.username,
-          email: user!.email,
-          userRole: user!.role,
+          username: result.user.username,
+          email: result.user.email,
+          userRole: result.user.role,
         },
-        token,
+        token: result.token,
       },
     });
   } catch (error) {

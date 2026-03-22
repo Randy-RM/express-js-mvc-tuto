@@ -1,6 +1,5 @@
 import { Request, Response, NextFunction } from "express";
-import { ArticleModel, UserModel } from "../models";
-import { isAllowedToManipulate, throwError } from "../utils";
+import { articleService } from "../services";
 import { IUser } from "../types";
 
 export async function getOneArticle(
@@ -8,18 +7,8 @@ export async function getOneArticle(
   res: Response,
   next: NextFunction
 ): Promise<void> {
-  const { articleId } = req.params;
-
   try {
-    const article = await ArticleModel.findById(articleId).populate({
-      path: "user",
-      model: "User",
-      select: { _id: 0, username: 1, email: 1 },
-    });
-
-    if (!article) {
-      throwError(404, `Article with id "${articleId}" not found`);
-    }
+    const article = await articleService.findById(String(req.params.articleId));
 
     res.status(200).json({
       success: true,
@@ -37,36 +26,19 @@ export async function getUserArticles(
   res: Response,
   next: NextFunction
 ): Promise<void> {
-  const { userId } = req.params;
-  const { cursor, limit = "10" } = req.query;
-  let query: Record<string, unknown> = { user: userId };
-
-  if (cursor) {
-    query._id = { $gt: cursor };
-  }
-
   try {
-    const articles = await ArticleModel.find(query)
-      .select({ title: 1, summary: 1, isPublished: 1, isArchived: 1, createdAt: 1 })
-      .limit(Number(limit));
-
-    if (!articles || articles.length === 0) {
-      throwError(404, "Articles not found");
-    }
-
-    const prevCursor = cursor && articles.length > 0 ? articles[0]._id : null;
-    const nextCursor = articles.length > 0 ? articles[articles.length - 1]._id : null;
+    const { cursor, limit = "10" } = req.query;
+    const data = await articleService.findByUser(
+      String(req.params.userId),
+      cursor as string | undefined,
+      Number(limit)
+    );
 
     res.status(200).json({
       success: true,
       status: 200,
       message: "Articles found",
-      data: {
-        nextCursor,
-        prevCursor,
-        totalResults: articles.length,
-        data: articles,
-      },
+      data,
     });
   } catch (error) {
     next(error);
@@ -78,46 +50,22 @@ export async function getAllArticles(
   res: Response,
   next: NextFunction
 ): Promise<void> {
-  const { cursor, limit = "10", isPublished, isArchived } = req.query;
-  let query: Record<string, unknown> = {};
-
-  if (cursor) {
-    query._id = { $gt: cursor };
-  }
-  if (isPublished === "true") {
-    query.isPublished = true;
-  }
-  if (isArchived === "true") {
-    query.isArchived = true;
-  }
-
   try {
-    const articles = await ArticleModel.find(query)
-      .select({ title: 1, summary: 1, createdAt: 1 })
-      .populate({
-        path: "user",
-        model: "User",
-        select: { _id: 0, username: 1, email: 1 },
-      })
-      .limit(Number(limit));
-
-    if (!articles || articles.length === 0) {
-      throwError(404, "Articles not found");
-    }
-
-    const prevCursor = cursor && articles.length > 0 ? articles[0]._id : null;
-    const nextCursor = articles.length > 0 ? articles[articles.length - 1]._id : null;
+    const { cursor, limit = "10", isPublished, isArchived } = req.query;
+    const data = await articleService.findAll(
+      cursor as string | undefined,
+      Number(limit),
+      {
+        isPublished: isPublished === "true" ? true : undefined,
+        isArchived: isArchived === "true" ? true : undefined,
+      }
+    );
 
     res.status(200).json({
       success: true,
       status: 200,
       message: "Articles found",
-      data: {
-        nextCursor,
-        prevCursor,
-        totalResults: articles.length,
-        data: articles,
-      },
+      data,
     });
   } catch (error) {
     next(error);
@@ -129,22 +77,10 @@ export async function createArticle(
   res: Response,
   next: NextFunction
 ): Promise<void> {
-  const userId = (req.user as IUser)._id;
-
   try {
-    const user = await UserModel.findById(userId);
-
-    if (!user) {
-      throwError(500, "Something went wrong");
-    }
-
+    const userId = String((req.user as IUser)._id);
     const { title, summary, content } = req.body;
-    let article = await ArticleModel.create({ title, summary, content, user });
-    article = await article.populate({
-      path: "user",
-      model: "User",
-      select: { _id: 0, username: 1, email: 1 },
-    });
+    const article = await articleService.create(userId, { title, summary, content });
 
     res.status(201).json({
       success: true,
@@ -162,30 +98,13 @@ export async function updateArticle(
   res: Response,
   next: NextFunction
 ): Promise<void> {
-  const { articleId } = req.params;
-  const connectedUser = req.user as IUser;
-
   try {
-    const existingArticle = await ArticleModel.findById(articleId);
-
-    if (!existingArticle) {
-      throwError(404, `Article with id "${articleId}" not found`);
-    }
-
-    if (!isAllowedToManipulate(existingArticle!.user, connectedUser)) {
-      throwError(403, "Forbidden: not authorized to manipulate this resource");
-    }
-
     const { title, summary, content, isPublished, isArchived } = req.body;
-    const article = await ArticleModel.findByIdAndUpdate(
-      articleId,
-      { title, summary, content, isPublished, isArchived },
-      { new: true }
-    ).populate({
-      path: "user",
-      model: "User",
-      select: { _id: 0, username: 1, email: 1 },
-    });
+    const article = await articleService.update(
+      String(req.params.articleId),
+      req.user as IUser,
+      { title, summary, content, isPublished, isArchived }
+    );
 
     res.status(200).json({
       success: true,
@@ -203,25 +122,8 @@ export async function deleteArticle(
   res: Response,
   next: NextFunction
 ): Promise<void> {
-  const { articleId } = req.params;
-  const connectedUser = req.user as IUser;
-
   try {
-    const article = await ArticleModel.findById(articleId).populate({
-      path: "user",
-      model: "User",
-      select: { _id: 0, username: 1, email: 1 },
-    });
-
-    if (!article) {
-      throwError(404, `Article with id "${articleId}" not found`);
-    }
-
-    if (!isAllowedToManipulate(article!.user, connectedUser)) {
-      throwError(403, "Forbidden: not authorized to manipulate this resource");
-    }
-
-    await article!.deleteOne();
+    const article = await articleService.delete(String(req.params.articleId), req.user as IUser);
 
     res.status(200).json({
       success: true,
@@ -240,11 +142,12 @@ export async function deleteAllArticles(
   next: NextFunction
 ): Promise<void> {
   try {
-    const result = await ArticleModel.deleteMany({});
+    const deletedCount = await articleService.deleteAll();
+
     res.status(200).json({
       success: true,
       status: 200,
-      message: `${result.deletedCount} articles deleted`,
+      message: `${deletedCount} articles deleted`,
       data: {},
     });
   } catch (error) {
