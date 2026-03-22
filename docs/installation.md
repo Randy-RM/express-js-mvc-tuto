@@ -1,3 +1,5 @@
+[← Back to README](../README.md)
+
 # Installation & Configuration
 
 ## Prerequisites

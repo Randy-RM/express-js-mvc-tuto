@@ -1,3 +1,5 @@
+[← Back to README](../README.md)
+
 # How the Application Works
 
 ## Middleware Pipeline

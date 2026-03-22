@@ -1,3 +1,5 @@
+[← Back to README](../README.md)
+
 # API Endpoints
 
 All endpoints are prefixed with `/api`.
