@@ -1,5 +1,5 @@
 import "dotenv/config";
-import express, { Request, Response, RequestHandler, ErrorRequestHandler } from "express";
+import express, { Request, Response } from "express";
 import cors from "cors";
 import helmet from "helmet";
 import passport from "passport";
@@ -38,15 +38,14 @@ app.use(helmet());
 app.use(limiter);
 
 configurePassport(passport);
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
-app.use(passport.initialize() as any);
+app.use(passport.initialize());
 
-app.use(logger as RequestHandler);
+app.use(logger);
 app.get("/api", (_req: Request, res: Response) => {
   res.json({ message: "Welcome to Express MVC Tuto API" });
 });
 app.use("/api", router);
-app.use(errorHandler as ErrorRequestHandler);
+app.use(errorHandler);
 
 dbConnection.once("open", () => {
   console.log("Successful connection to DB");

@@ -4,11 +4,7 @@ import { UserModel } from "../models";
 import { isAllowedToManipulate, isRoleExist, throwError } from "../utils";
 import { IUser } from "../types";
 
-export async function getOneUser(
-  req: Request,
-  res: Response,
-  next: NextFunction
-): Promise<void> {
+export async function getOneUser(req: Request, res: Response, next: NextFunction): Promise<void> {
   const { userId } = req.params;
   const connectedUser = req.user as IUser;
 
@@ -34,11 +30,7 @@ export async function getOneUser(
   }
 }
 
-export async function getAllUsers(
-  req: Request,
-  res: Response,
-  next: NextFunction
-): Promise<void> {
+export async function getAllUsers(req: Request, res: Response, next: NextFunction): Promise<void> {
   const { cursor, limit = "10" } = req.query;
   let query: Record<string, unknown> = {};
 
@@ -72,11 +64,7 @@ export async function getAllUsers(
   }
 }
 
-export async function createUser(
-  req: Request,
-  res: Response,
-  next: NextFunction
-): Promise<void> {
+export async function createUser(req: Request, res: Response, next: NextFunction): Promise<void> {
   const { username, email, password, role } = req.body;
 
   try {
@@ -105,11 +93,7 @@ export async function createUser(
   }
 }
 
-export async function updateUser(
-  req: Request,
-  res: Response,
-  next: NextFunction
-): Promise<void> {
+export async function updateUser(req: Request, res: Response, next: NextFunction): Promise<void> {
   const { userId } = req.params;
   const connectedUser = req.user as IUser;
 
@@ -145,11 +129,7 @@ export async function updateUser(
   }
 }
 
-export async function deleteUser(
-  req: Request,
-  res: Response,
-  next: NextFunction
-): Promise<void> {
+export async function deleteUser(req: Request, res: Response, next: NextFunction): Promise<void> {
   const { userId } = req.params;
   const connectedUser = req.user as IUser;
 
@@ -194,4 +174,3 @@ export async function deleteAllUsers(
     next(error);
   }
 }
-

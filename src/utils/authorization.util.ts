@@ -9,7 +9,7 @@ export function isAllowedToManipulate(
   resourceOwnerId: string | object,
   connectedUser: IUser
 ): boolean {
-  const { id: loggedUserId, role: loggedUserRole } = connectedUser;
+  const { _id: loggedUserId, role: loggedUserRole } = connectedUser;
   if (String(resourceOwnerId) !== String(loggedUserId)) {
     if (loggedUserRole !== ROLES.ADMIN) {
       return false;

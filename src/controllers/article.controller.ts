@@ -251,4 +251,3 @@ export async function deleteAllArticles(
     next(error);
   }
 }
-

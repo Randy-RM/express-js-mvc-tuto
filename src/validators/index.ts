@@ -19,9 +19,7 @@ export function handleValidationErrors(req: Request, res: Response, next: NextFu
 export const signupValidation = [
   body("username").trim().notEmpty().withMessage("Username is required"),
   body("email").trim().isEmail().withMessage("Valid email is required").normalizeEmail(),
-  body("password")
-    .isLength({ min: 8 })
-    .withMessage("Password must be at least 8 characters"),
+  body("password").isLength({ min: 8 }).withMessage("Password must be at least 8 characters"),
   handleValidationErrors,
 ];
 
@@ -51,9 +49,7 @@ export const updateArticleValidation = [
 export const createUserValidation = [
   body("username").trim().notEmpty().withMessage("Username is required"),
   body("email").trim().isEmail().withMessage("Valid email is required").normalizeEmail(),
-  body("password")
-    .isLength({ min: 8 })
-    .withMessage("Password must be at least 8 characters"),
+  body("password").isLength({ min: 8 }).withMessage("Password must be at least 8 characters"),
   body("role").optional().isIn(["admin", "moderator", "user"]).withMessage("Invalid role"),
   handleValidationErrors,
 ];
