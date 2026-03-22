@@ -18,6 +18,8 @@
 | **express-validator** | ^7.3.1 | Request body/params/query validation & sanitization |
 | **dotenv** | ^17.3.1 | Environment variable loading from `.env` file |
 | **nodemailer** | ^8.0.3 | Email sending (account activation, recovery) |
+| **swagger-jsdoc** | ^6.2.8 | Generate OpenAPI 3.0 spec from JSDoc annotations |
+| **swagger-ui-express** | ^5.0.1 | Serve interactive Swagger UI documentation |
 
 ## Development Dependencies
 
@@ -29,6 +31,8 @@
 | **eslint** | ^8.57.0 | Code linting |
 | **@typescript-eslint/\*** | ^8.57.1 | TypeScript-specific ESLint rules |
 | **@types/\*** | various | TypeScript type definitions for all runtime dependencies |
+| **@types/swagger-jsdoc** | ^6.0.4 | TypeScript types for swagger-jsdoc |
+| **@types/swagger-ui-express** | ^4.1.8 | TypeScript types for swagger-ui-express |
 
 ## Package Relationships
 
@@ -54,6 +58,10 @@
     ┌───────────────┐  ┌───────────┐  ┌───────────┐
     │express-validator│  │nodemailer │  │  dotenv   │  Utilities
     └───────────────┘  └───────────┘  └───────────┘
+
+    ┌───────────────┐  ┌───────────────────┐
+    │ swagger-jsdoc │──▶│swagger-ui-express │  API Documentation
+    └───────────────┘  └───────────────────┘
 ```
 
 ---

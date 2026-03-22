@@ -6,6 +6,8 @@ A RESTful blog API built with **Express.js 5**, **TypeScript**, **MongoDB** and 
 
 > This application is a simple blog API with role-based authentication (user, moderator, admin).
 
+> **A note for you, fellow developer** — This project exists for one simple reason: to help you learn, grow, and get better at backend development with Express.js. Whether you're just getting started or looking to level up your skills in software architecture, clean code, and best practices, this codebase is designed to be explored, studied, and used freely for your personal projects. Every folder, every layer, every pattern here is meant to be understood — not just copied. Take your time, read through the code, follow the documentation, and make it your own. If you have a thirst for knowledge, you're in the right place.
+
 ---
 
 ## Table of Contents
@@ -33,6 +35,7 @@ yarn dev
 ```
 
 The API will be available at `http://localhost:8000/api`.
+The Swagger documentation will be available at `http://localhost:8000/api-docs`.
 
 ---
 
