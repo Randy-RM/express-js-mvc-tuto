@@ -20,6 +20,7 @@ A RESTful blog API built with **Express.js 5**, **TypeScript**, **MongoDB** and 
 | 4 | [Request Lifecycle Example](docs/request-lifecycle.md) | Step-by-step walkthrough of a `POST /api/articles` request |
 | 5 | [API Endpoints](docs/api-endpoints.md) | All routes with auth requirements, roles, and examples |
 | 6 | [Installation & Configuration](docs/installation.md) | Setup guide, scripts, and environment variables |
+| 7 | [Commit Conventions](docs/commit-conventions.md) | Commit message format, examples, and pre-commit hooks |
 
 ---
 
