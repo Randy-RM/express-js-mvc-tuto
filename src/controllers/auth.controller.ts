@@ -1,5 +1,6 @@
 import { Request, Response, NextFunction } from "express";
 import { authService } from "../services";
+import { IUser } from "../types";
 
 export async function signup(req: Request, res: Response, next: NextFunction): Promise<void> {
   try {
@@ -78,13 +79,44 @@ export async function logout(req: Request, res: Response): Promise<void> {
   });
 }
 
-export async function recoverAccount(req: Request, res: Response): Promise<void> {
-  // TODO: Implement account recovery with email token flow
-  res.status(501).json({
-    success: false,
-    status: 501,
-    message: "Account recovery not yet implemented",
-  });
+export async function recoverAccount(
+  req: Request,
+  res: Response,
+  next: NextFunction
+): Promise<void> {
+  try {
+    const { email } = req.body;
+    const apiHostDomain = process.env.API_HOST || `localhost:${process.env.PORT || 8000}`;
+    await authService.recoverAccount(email, apiHostDomain);
+
+    res.status(200).json({
+      success: true,
+      status: 200,
+      message: "If the email exists, a recovery link has been sent",
+    });
+  } catch (error) {
+    next(error);
+  }
+}
+
+export async function resetPassword(
+  req: Request,
+  res: Response,
+  next: NextFunction
+): Promise<void> {
+  try {
+    const resetToken = String(req.params.resetToken);
+    const { password } = req.body;
+    await authService.resetPassword(resetToken, password);
+
+    res.status(200).json({
+      success: true,
+      status: 200,
+      message: "Password has been reset successfully",
+    });
+  } catch (error) {
+    next(error);
+  }
 }
 
 export async function deleteAccount(
@@ -92,10 +124,17 @@ export async function deleteAccount(
   res: Response,
   next: NextFunction
 ): Promise<void> {
-  // TODO: Implement account deletion with password confirmation
-  res.status(501).json({
-    success: false,
-    status: 501,
-    message: "Account deletion not yet implemented",
-  });
+  try {
+    const userId = (req.user as IUser).id;
+    const { password } = req.body;
+    await authService.deleteAccount(userId, password);
+
+    res.status(200).json({
+      success: true,
+      status: 200,
+      message: "Account deleted successfully",
+    });
+  } catch (error) {
+    next(error);
+  }
 }

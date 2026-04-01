@@ -1,5 +1,5 @@
 import nodemailer from "nodemailer";
-import { authBaseURI, activateAccountURI } from "../config/paths.config";
+import { authBaseURI, activateAccountURI, resetPasswordURI } from "../config/paths.config";
 
 function createTransport() {
   if (process.env.NODE_ENV === "development") {
@@ -38,5 +38,28 @@ export async function sendAccountActivationEmail(
     console.log("Confirmation email sent");
   } catch (error) {
     console.error("Confirmation email not sent", error);
+  }
+}
+
+export async function sendPasswordRecoveryEmail(
+  email: string,
+  resetToken: string,
+  apiHostDomain: string
+): Promise<void> {
+  const transport = createTransport();
+  const sender = "MiniBlog My Company <info@mini-blog.org>";
+
+  const mailOptions = {
+    from: sender,
+    to: email,
+    subject: "Password recovery",
+    html: `Press <a href='http://${apiHostDomain}${authBaseURI}${resetPasswordURI}/${resetToken}'>Here</a> to reset your password. This link expires in 1 hour.`,
+  };
+
+  try {
+    await transport.sendMail(mailOptions);
+    console.log("Recovery email sent");
+  } catch (error) {
+    console.error("Recovery email not sent", error);
   }
 }

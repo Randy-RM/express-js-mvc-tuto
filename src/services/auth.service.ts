@@ -1,7 +1,7 @@
 import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
 import { prisma } from "../models";
-import { randomStringGenerator, throwError } from "../utils";
+import { randomStringGenerator, throwError, sendPasswordRecoveryEmail } from "../utils";
 
 export class AuthService {
   async signup(
@@ -66,6 +66,66 @@ export class AuthService {
       },
       token,
     };
+  }
+
+  async recoverAccount(email: string, apiHostDomain: string): Promise<void> {
+    const user = await prisma.user.findUnique({ where: { email } });
+
+    if (!user) {
+      // Don't reveal whether the email exists
+      return;
+    }
+
+    const resetToken = randomStringGenerator();
+    const resetTokenExpiry = new Date(Date.now() + 3600000); // 1 hour
+
+    await prisma.user.update({
+      where: { id: user.id },
+      data: { resetToken, resetTokenExpiry },
+    });
+
+    await sendPasswordRecoveryEmail(email, resetToken, apiHostDomain);
+  }
+
+  async resetPassword(resetToken: string, newPassword: string): Promise<void> {
+    const user = await prisma.user.findFirst({
+      where: {
+        resetToken,
+        resetTokenExpiry: { gt: new Date() },
+      },
+    });
+
+    if (!user) {
+      throwError(400, "Invalid or expired reset token");
+    }
+
+    const hashedPassword = await bcrypt.hash(newPassword, 12);
+
+    await prisma.user.update({
+      where: { id: user!.id },
+      data: {
+        password: hashedPassword,
+        resetToken: null,
+        resetTokenExpiry: null,
+      },
+    });
+  }
+
+  async deleteAccount(userId: string, password: string): Promise<void> {
+    const user = await prisma.user.findUnique({ where: { id: userId } });
+
+    if (!user) {
+      throwError(404, "User not found");
+    }
+
+    const passwordMatch = await bcrypt.compare(password, user!.password);
+
+    if (!passwordMatch) {
+      throwError(401, "Invalid password");
+    }
+
+    await prisma.article.deleteMany({ where: { userId: user!.id } });
+    await prisma.user.delete({ where: { id: user!.id } });
   }
 }
 

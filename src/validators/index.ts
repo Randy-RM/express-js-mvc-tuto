@@ -29,6 +29,22 @@ export const signinValidation = [
   handleValidationErrors,
 ];
 
+export const recoverAccountValidation = [
+  body("email").trim().isEmail().withMessage("Valid email is required").normalizeEmail(),
+  handleValidationErrors,
+];
+
+export const resetPasswordValidation = [
+  param("resetToken").notEmpty().withMessage("Reset token is required"),
+  body("password").isLength({ min: 8 }).withMessage("Password must be at least 8 characters"),
+  handleValidationErrors,
+];
+
+export const deleteAccountValidation = [
+  body("password").notEmpty().withMessage("Password is required for account deletion"),
+  handleValidationErrors,
+];
+
 export const createArticleValidation = [
   body("title").trim().notEmpty().withMessage("Title is required"),
   body("summary").trim().notEmpty().withMessage("Summary is required"),

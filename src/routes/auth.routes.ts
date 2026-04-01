@@ -1,13 +1,21 @@
 import { Router } from "express";
+import passport from "passport";
 import {
   activateAccount,
   deleteAccount,
   logout,
   recoverAccount,
+  resetPassword,
   signin,
   signup,
 } from "../controllers/auth.controller";
-import { signupValidation, signinValidation } from "../validators";
+import {
+  signupValidation,
+  signinValidation,
+  recoverAccountValidation,
+  resetPasswordValidation,
+  deleteAccountValidation,
+} from "../validators";
 
 const authRouter = Router();
 
@@ -19,10 +27,17 @@ authRouter.get("/activate-account/:uniqueString", activateAccount);
 
 authRouter.post("/signin", signinValidation, signin);
 
-authRouter.post("/recover-account", recoverAccount);
+authRouter.post("/recover-account", recoverAccountValidation, recoverAccount);
+
+authRouter.post("/reset-password/:resetToken", resetPasswordValidation, resetPassword);
 
 authRouter.get("/logout", logout);
 
-authRouter.post("/delete-account", deleteAccount);
+authRouter.post(
+  "/delete-account",
+  passport.authenticate("jwt", { session: false }),
+  deleteAccountValidation,
+  deleteAccount
+);
 
 export default authRouter;
