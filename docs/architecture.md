@@ -8,7 +8,7 @@ The project follows a layered **MVC + Service** architecture:
 src/
 ├── server.ts                  # Application entry point & Express configuration
 ├── config/
-│   ├── database.config.ts     # MongoDB connection via Mongoose
+│   ├── database.config.ts     # PostgreSQL connection via Prisma
 │   ├── passport.config.ts     # Passport JWT strategy configuration
 │   ├── paths.config.ts        # Base URI constants for routes
 │   └── swagger.config.ts      # Swagger/OpenAPI specification configuration
@@ -24,8 +24,9 @@ src/
 │   ├── logger.middleware.ts    # Colored request logger
 │   └── index.ts               # Barrel export
 ├── models/
-│   ├── article.model.ts       # Mongoose Article schema & model
-│   ├── user.model.ts          # Mongoose User schema & model
+│   ├── article.model.ts       # Prisma Article model operations
+│   ├── user.model.ts          # Prisma User model operations
+│   ├── prisma.ts              # Prisma client instance (with pg adapter)
 │   └── index.ts               # Barrel export
 ├── routes/
 │   ├── articles.routes.ts     # Article route definitions
@@ -65,7 +66,7 @@ src/
 | **Validators** | Input validation & sanitization using express-validator |
 | **Controllers** | Extract request data (`params`, `body`, `query`), call services, format HTTP responses |
 | **Services** | Business logic, database operations, authorization checks — framework-independent |
-| **Models** | Mongoose schemas, data shape, instance methods (e.g. password comparison) |
+| **Models** | Prisma schema definitions & database query helpers |
 | **Utils** | Shared helper functions (error throwing, email, role checks) |
 | **Types** | TypeScript interfaces (`IUser`, `IArticle`, `ApiResponse`, `AppError`) |
 | **Config** | Application configuration (DB connection, Passport strategy, route paths) |
@@ -83,7 +84,7 @@ Routes  →  Middlewares  →  Validators  →  Controllers  →  Services  → 
 3. **Validators** validate and sanitize incoming request data
 4. **Controllers** are thin — they extract data from the request, call the appropriate service, and send the response
 5. **Services** contain all business logic and interact with **Models** to perform database operations
-6. **Models** define the MongoDB document schemas via Mongoose
+6. **Models** define the database schema via Prisma and interact with PostgreSQL
 
 ---
 

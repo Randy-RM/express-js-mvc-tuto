@@ -7,7 +7,9 @@
 | Package | Version | Purpose |
 |---|---|---|
 | **express** | ^5.2.1 | Web framework — routing, middleware pipeline, async error handling (v5) |
-| **mongoose** | ^9.3.1 | MongoDB ODM — schema definition, validation, queries, population |
+| **@prisma/client** | ^7.5.0 | Prisma ORM — type-safe database queries, schema definition, migrations |
+| **@prisma/adapter-pg** | ^7.6.0 | PostgreSQL driver adapter for Prisma 7 |
+| **pg** | ^8.20.0 | PostgreSQL client for Node.js |
 | **passport** | ^0.7.0 | Authentication framework — pluggable strategies |
 | **passport-jwt** | ^4.0.1 | JWT authentication strategy for Passport |
 | **jsonwebtoken** | ^9.0.3 | JWT token creation & verification for stateless auth |
@@ -25,7 +27,7 @@
 
 | Package | Version | Purpose |
 |---|---|---|
-| **typescript** | ^5.9.3 | TypeScript compiler — strict mode, ES2020 target |
+| **prisma** | ^7.5.0 | Prisma CLI — schema management, migrations, client generation |
 | **ts-node-dev** | ^2.0.0 | Development server with hot reload & TypeScript transpilation |
 | **ts-node** | ^10.9.2 | TypeScript execution for seeders and scripts |
 | **eslint** | ^8.57.0 | Code linting |
@@ -52,8 +54,9 @@
     └───────────┘   └───────────┘   └────────────┘
 
     ┌───────────┐   ┌───────────┐
-    │ mongoose  │   │  bcrypt   │  Data & Security
-    └───────────┘   └───────────┘
+    │    prisma      │   │  bcrypt   │  Data & Security
+    │  (PostgreSQL)  │   └───────────┘
+    └───────────────┘
 
     ┌───────────────┐  ┌───────────┐  ┌───────────┐
     │express-validator│  │nodemailer │  │  dotenv   │  Utilities

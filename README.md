@@ -2,7 +2,7 @@
 
 <img src="https://media.giphy.com/media/hvRJCLFzcasrR4ia7z/giphy.gif" width="28"><img src="https://emojis.slackmojis.com/emojis/images/1531849430/4246/blob-sunglasses.gif?1531849430" width="28"/>
 
-A RESTful blog API built with **Express.js 5**, **TypeScript**, **MongoDB** and **Passport.js**. This project follows the **MVC + Service Layer** design pattern with role-based access control.
+A RESTful blog API built with **Express.js 5**, **TypeScript**, **PostgreSQL** (via **Prisma ORM 7**) and **Passport.js**. This project follows the **MVC + Service Layer** design pattern with role-based access control.
 
 > This application is a simple blog API with role-based authentication (user, moderator, admin).
 
@@ -48,7 +48,7 @@ The Swagger documentation will be available at `http://localhost:8000/api-docs`.
 |---|---|
 | **Express.js 5** | Web framework with async error handling |
 | **TypeScript 5** | Static typing with strict mode |
-| **MongoDB + Mongoose 9** | Database & ODM |
+| **PostgreSQL + Prisma 7** | Database & ORM |
 | **Passport.js + JWT** | Authentication |
 | **bcrypt** | Password hashing |
 | **express-validator** | Input validation |
@@ -59,7 +59,7 @@ The Swagger documentation will be available at `http://localhost:8000/api-docs`.
 ```
 Routes  →  Middlewares  →  Validators  →  Controllers  →  Services  →  Models
                                                                           ↕
-                                                                       MongoDB
+                                                                      PostgreSQL
 ```
 
 ### Roles
@@ -80,6 +80,8 @@ Routes  →  Middlewares  →  Validators  →  Controllers  →  Services  → 
 | `yarn build` | Compile TypeScript to `./dist` |
 | `yarn prod` | Run the production build |
 | `yarn seed` | Seed the database |
+| `yarn prisma:generate` | Generate the Prisma client |
+| `yarn prisma:studio` | Open Prisma Studio (DB GUI) |
 | `yarn lint` | Run ESLint |
 | `yarn lint:fix` | Run ESLint with auto-fix |
 | `yarn format` | Format with Prettier |

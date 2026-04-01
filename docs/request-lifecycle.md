@@ -100,17 +100,19 @@ The controller is **thin** — it only:
 
 `articleService.create()` in `article.service.ts`:
 - Finds the user by ID in the database
-- Creates the article document via `ArticleModel.create()`
-- Populates the `user` field (username, email)
-- Returns the populated article
+- Creates the article record via Prisma
+- Includes the related `user` data
+- Returns the article with user info
 
 ```typescript
 async create(userId: string, data: { title: string; summary: string; content: string }) {
-  const user = await UserModel.findById(userId);
+  const user = await prisma.user.findUnique({ where: { id: userId } });
   if (!user) throwError(500, "Something went wrong");
 
-  let article = await ArticleModel.create({ ...data, user });
-  article = await article.populate({ path: "user", model: "User", select: { _id: 0, username: 1, email: 1 } });
+  const article = await prisma.article.create({
+    data: { ...data, userId },
+    include: { user: { select: { username: true, email: true } } },
+  });
 
   return article;
 }
@@ -124,7 +126,7 @@ async create(userId: string, data: { title: string; summary: string; content: st
   "status": 201,
   "message": "Article created",
   "data": {
-    "_id": "665a1b2c3d4e5f6a7b8c9d0e",
+    "id": "a1b2c3d4-e5f6-7890-abcd-ef1234567890",
     "title": "My First Article",
     "summary": "An introduction to Express.js",
     "content": "Express.js is a minimal and flexible Node.js web framework...",
@@ -175,8 +177,8 @@ Client
 └─────────────────────┬────────────────────────────┘
                       ▼
 ┌──────────────────────────────────────────────────┐
-│                Model (Mongoose)                  │
-│  Schema validation → MongoDB query → Document    │
+│                Model (Prisma)                  │
+│  Schema validation → PostgreSQL query → Record  │
 └──────────────────────────────────────────────────┘
 ```
 

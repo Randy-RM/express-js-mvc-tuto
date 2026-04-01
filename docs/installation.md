@@ -6,7 +6,7 @@
 
 - **Node.js** >= 18.x
 - **Yarn** package manager
-- **MongoDB** instance (local or remote)
+- **PostgreSQL** instance (local or remote)
 
 ## Installation
 
@@ -24,14 +24,19 @@
 3. Configure environment variables:
    - Rename `sample.env` to `.env`
    - Uncomment all variables
-   - Set `MONGOHQ_URL` to your MongoDB connection string
+   - Set `DATABASE_URL` to your PostgreSQL connection string
 
-4. Seed the database:
+4. Push the schema to the database:
+   ```bash
+   npx prisma db push
+   ```
+
+5. Seed the database:
    ```bash
    yarn seed
    ```
 
-5. Start the development server:
+6. Start the development server:
    ```bash
    yarn dev
    ```
@@ -46,6 +51,8 @@ The API will be available at `http://localhost:8000/api`.
 | `yarn build` | Compile TypeScript to JavaScript (`./dist`) |
 | `yarn prod` | Run the compiled production build |
 | `yarn seed` | Seed the database with initial roles |
+| `yarn prisma:generate` | Generate the Prisma client |
+| `yarn prisma:studio` | Open Prisma Studio (DB GUI) |
 | `yarn lint` | Run ESLint on all TypeScript files |
 | `yarn lint:fix` | Run ESLint and auto-fix issues |
 | `yarn format` | Format all TypeScript files with Prettier |
@@ -56,7 +63,7 @@ The API will be available at `http://localhost:8000/api`.
 |---|---|---|
 | `PORT` | Server port | `8000` |
 | `NODE_ENV` | Environment mode | `development` / `production` |
-| `MONGOHQ_URL` | MongoDB connection string | `mongodb://localhost:27017/miniblog` |
+| `DATABASE_URL` | PostgreSQL connection string | `postgresql://postgres:postgres@localhost:5432/miniblog` |
 | `API_HOST` | Allowed API origin (production) | `https://api.example.com` |
 | `CLIENT_HOST` | Allowed client origin (production) | `https://example.com` |
 | `SESSION_SECRET` | Session encryption secret | Random string |

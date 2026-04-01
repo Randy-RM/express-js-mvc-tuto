@@ -83,7 +83,7 @@ Response `200`:
 ### Get All Users
 
 ```http
-GET /api/users?limit=10&cursor=665a1b2c3d4e5f6a7b8c9d0e
+GET /api/users?limit=10&cursor=a1b2c3d4-e5f6-7890-abcd-ef1234567890
 Authorization: Bearer <token>
 ```
 
@@ -94,8 +94,8 @@ Response `200`:
   "status": 200,
   "message": "Users found",
   "data": {
-    "nextCursor": "665a1b2c3d4e5f6a7b8c9d1f",
-    "prevCursor": "665a1b2c3d4e5f6a7b8c9d0e",
+    "nextCursor": "b2c3d4e5-f6a7-8901-bcde-f12345678901",
+    "prevCursor": "a1b2c3d4-e5f6-7890-abcd-ef1234567890",
     "totalResults": 10,
     "data": [...]
   }
@@ -124,7 +124,7 @@ Response `201`:
   "status": 201,
   "message": "User created",
   "data": {
-    "_id": "665a1b2c3d4e5f6a7b8c9d0e",
+    "id": "a1b2c3d4-e5f6-7890-abcd-ef1234567890",
     "username": "new_user",
     "email": "new@example.com",
     "role": "moderator",
@@ -164,12 +164,12 @@ Response `200`:
   "status": 200,
   "message": "Articles found",
   "data": {
-    "nextCursor": "665a1b2c3d4e5f6a7b8c9d1f",
+    "nextCursor": "b2c3d4e5-f6a7-8901-bcde-f12345678901",
     "prevCursor": null,
     "totalResults": 10,
     "data": [
       {
-        "_id": "665a1b2c3d4e5f6a7b8c9d0e",
+        "id": "a1b2c3d4-e5f6-7890-abcd-ef1234567890",
         "title": "My Article",
         "summary": "A short summary",
         "createdAt": "2026-03-22T10:00:00.000Z",
@@ -204,7 +204,7 @@ Response `201`:
   "status": 201,
   "message": "Article created",
   "data": {
-    "_id": "665a1b2c3d4e5f6a7b8c9d0e",
+    "id": "a1b2c3d4-e5f6-7890-abcd-ef1234567890",
     "title": "My New Article",
     "summary": "A brief summary of the article",
     "content": "Full article content goes here...",
@@ -228,7 +228,7 @@ The API uses **cursor-based pagination** for list endpoints. Query parameters:
 
 | Parameter | Type | Default | Description |
 |---|---|---|---|
-| `cursor` | string | — | MongoDB ObjectId to start after |
+| `cursor` | string | — | UUID of the last item to start after |
 | `limit` | number | 10 | Number of results per page |
 
 The response includes `nextCursor` and `prevCursor` for navigating between pages.
