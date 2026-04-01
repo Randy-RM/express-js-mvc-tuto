@@ -74,7 +74,7 @@ export async function createArticle(
   next: NextFunction
 ): Promise<void> {
   try {
-    const userId = String((req.user as IUser)._id);
+    const userId = String((req.user as IUser).id);
     const { title, summary, content } = req.body;
     const article = await articleService.create(userId, { title, summary, content });
 

@@ -1,6 +1,12 @@
-import mongoose from "mongoose";
+import { prisma } from "../models";
 
-const dbString = process.env.MONGOHQ_URL || "";
-const dbConnection = mongoose.createConnection(dbString);
+export async function connectDatabase(): Promise<void> {
+  await prisma.$connect();
+  console.log("Successful connection to DB");
+}
 
-export default dbConnection;
+export async function disconnectDatabase(): Promise<void> {
+  await prisma.$disconnect();
+}
+
+export default { connectDatabase, disconnectDatabase };

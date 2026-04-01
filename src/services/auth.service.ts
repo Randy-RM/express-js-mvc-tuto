@@ -1,8 +1,7 @@
 import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
-import { UserModel } from "../models";
+import { prisma } from "../models";
 import { randomStringGenerator, throwError } from "../utils";
-import { IUser } from "../types";
 
 export class AuthService {
   async signup(
@@ -14,39 +13,42 @@ export class AuthService {
 
     const hashedPassword = await bcrypt.hash(data.password, 12);
 
-    await UserModel.create({
-      username: data.username,
-      email: data.email,
-      password: hashedPassword,
-      uniqueString: randomStringGenerator(),
-      role: userRole,
-      isUserActive: true,
+    await prisma.user.create({
+      data: {
+        username: data.username,
+        email: data.email,
+        password: hashedPassword,
+        uniqueString: randomStringGenerator(),
+        role: userRole,
+        isUserActive: true,
+      },
     });
   }
 
   async activateAccount(uniqueString: string): Promise<void> {
-    const user = await UserModel.findOneAndUpdate(
-      { uniqueString },
-      { isUserActive: true },
-      { returnOriginal: false }
-    );
+    const user = await prisma.user.findFirst({ where: { uniqueString } });
 
     if (!user) {
       throwError(400, "Invalid activation link");
     }
+
+    await prisma.user.update({
+      where: { id: user!.id },
+      data: { isUserActive: true },
+    });
   }
 
   async signin(
     email: string,
     password: string
-  ): Promise<{ user: Pick<IUser, "username" | "email" | "role">; token: string }> {
-    const user = await UserModel.findOne({ email });
+  ): Promise<{ user: { username: string; email: string; role: string }; token: string }> {
+    const user = await prisma.user.findUnique({ where: { email } });
 
     if (!user) {
       throwError(401, "Invalid email or password");
     }
 
-    const passwordMatch = await user!.isUserPassword(password);
+    const passwordMatch = await bcrypt.compare(password, user!.password);
 
     if (!passwordMatch) {
       throwError(401, "Invalid email or password");

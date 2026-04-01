@@ -1,13 +1,17 @@
-import { ArticleModel, UserModel } from "../models";
+import { prisma } from "../models";
 import { isAllowedToManipulate, throwError } from "../utils";
-import { IArticle, IUser, PaginatedResponse } from "../types";
+import { IUser, PaginatedResponse } from "../types";
+import { Article } from "@prisma/client";
 
 export class ArticleService {
-  async findById(articleId: string): Promise<IArticle> {
-    const article = await ArticleModel.findById(articleId).populate({
-      path: "user",
-      model: "User",
-      select: { _id: 0, username: 1, email: 1 },
+  async findById(articleId: string) {
+    const article = await prisma.article.findUnique({
+      where: { id: articleId },
+      include: {
+        user: {
+          select: { username: true, email: true },
+        },
+      },
     });
 
     if (!article) {
@@ -21,24 +25,32 @@ export class ArticleService {
     userId: string,
     cursor?: string,
     limit = 10
-  ): Promise<PaginatedResponse<IArticle>> {
-    const query: Record<string, unknown> = { user: userId };
-
-    if (cursor) {
-      query._id = { $gt: cursor };
-    }
-
-    const articles = await ArticleModel.find(query)
-      .select({ title: 1, summary: 1, isPublished: 1, isArchived: 1, createdAt: 1 })
-      .limit(limit);
+  ): Promise<PaginatedResponse<Article>> {
+    const articles = await prisma.article.findMany({
+      where: { userId },
+      select: {
+        id: true,
+        title: true,
+        summary: true,
+        isPublished: true,
+        isArchived: true,
+        createdAt: true,
+        content: true,
+        userId: true,
+        updatedAt: true,
+      },
+      ...(cursor ? { cursor: { id: cursor }, skip: 1 } : {}),
+      take: limit,
+      orderBy: { id: "asc" },
+    });
 
     if (!articles || articles.length === 0) {
       throwError(404, "Articles not found");
     }
 
     return {
-      prevCursor: cursor && articles.length > 0 ? String(articles[0]._id) : null,
-      nextCursor: articles.length > 0 ? String(articles[articles.length - 1]._id) : null,
+      prevCursor: cursor && articles.length > 0 ? articles[0].id : null,
+      nextCursor: articles.length > 0 ? articles[articles.length - 1].id : null,
       totalResults: articles.length,
       data: articles,
     };
@@ -48,55 +60,63 @@ export class ArticleService {
     cursor?: string,
     limit = 10,
     filters: { isPublished?: boolean; isArchived?: boolean } = {}
-  ): Promise<PaginatedResponse<IArticle>> {
-    const query: Record<string, unknown> = {};
+  ) {
+    const where: Record<string, unknown> = {};
 
-    if (cursor) {
-      query._id = { $gt: cursor };
-    }
     if (filters.isPublished !== undefined) {
-      query.isPublished = filters.isPublished;
+      where.isPublished = filters.isPublished;
     }
     if (filters.isArchived !== undefined) {
-      query.isArchived = filters.isArchived;
+      where.isArchived = filters.isArchived;
     }
 
-    const articles = await ArticleModel.find(query)
-      .select({ title: 1, summary: 1, createdAt: 1 })
-      .populate({
-        path: "user",
-        model: "User",
-        select: { _id: 0, username: 1, email: 1 },
-      })
-      .limit(limit);
+    const articles = await prisma.article.findMany({
+      where,
+      select: {
+        id: true,
+        title: true,
+        summary: true,
+        createdAt: true,
+        user: {
+          select: { username: true, email: true },
+        },
+      },
+      ...(cursor ? { cursor: { id: cursor }, skip: 1 } : {}),
+      take: limit,
+      orderBy: { id: "asc" },
+    });
 
     if (!articles || articles.length === 0) {
       throwError(404, "Articles not found");
     }
 
     return {
-      prevCursor: cursor && articles.length > 0 ? String(articles[0]._id) : null,
-      nextCursor: articles.length > 0 ? String(articles[articles.length - 1]._id) : null,
+      prevCursor: cursor && articles.length > 0 ? articles[0].id : null,
+      nextCursor: articles.length > 0 ? articles[articles.length - 1].id : null,
       totalResults: articles.length,
       data: articles,
     };
   }
 
-  async create(
-    userId: string,
-    data: { title: string; summary: string; content: string }
-  ): Promise<IArticle> {
-    const user = await UserModel.findById(userId);
+  async create(userId: string, data: { title: string; summary: string; content: string }) {
+    const user = await prisma.user.findUnique({ where: { id: userId } });
 
     if (!user) {
       throwError(500, "Something went wrong");
     }
 
-    let article = await ArticleModel.create({ ...data, user });
-    article = await article.populate({
-      path: "user",
-      model: "User",
-      select: { _id: 0, username: 1, email: 1 },
+    const article = await prisma.article.create({
+      data: {
+        title: data.title,
+        summary: data.summary,
+        content: data.content,
+        userId,
+      },
+      include: {
+        user: {
+          select: { username: true, email: true },
+        },
+      },
     });
 
     return article;
@@ -112,51 +132,58 @@ export class ArticleService {
       isPublished?: boolean;
       isArchived?: boolean;
     }
-  ): Promise<IArticle> {
-    const existingArticle = await ArticleModel.findById(articleId);
+  ) {
+    const existingArticle = await prisma.article.findUnique({
+      where: { id: articleId },
+    });
 
     if (!existingArticle) {
       throwError(404, `Article with id "${articleId}" not found`);
     }
 
-    if (!isAllowedToManipulate(existingArticle!.user, connectedUser)) {
+    if (!isAllowedToManipulate(existingArticle!.userId, connectedUser)) {
       throwError(403, "Forbidden: not authorized to manipulate this resource");
     }
 
-    const article = await ArticleModel.findByIdAndUpdate(articleId, data, {
-      new: true,
-    }).populate({
-      path: "user",
-      model: "User",
-      select: { _id: 0, username: 1, email: 1 },
+    const article = await prisma.article.update({
+      where: { id: articleId },
+      data,
+      include: {
+        user: {
+          select: { username: true, email: true },
+        },
+      },
     });
 
-    return article!;
+    return article;
   }
 
-  async delete(articleId: string, connectedUser: IUser): Promise<IArticle> {
-    const article = await ArticleModel.findById(articleId).populate({
-      path: "user",
-      model: "User",
-      select: { _id: 0, username: 1, email: 1 },
+  async delete(articleId: string, connectedUser: IUser) {
+    const article = await prisma.article.findUnique({
+      where: { id: articleId },
+      include: {
+        user: {
+          select: { username: true, email: true },
+        },
+      },
     });
 
     if (!article) {
       throwError(404, `Article with id "${articleId}" not found`);
     }
 
-    if (!isAllowedToManipulate(article!.user, connectedUser)) {
+    if (!isAllowedToManipulate(article!.userId, connectedUser)) {
       throwError(403, "Forbidden: not authorized to manipulate this resource");
     }
 
-    await article!.deleteOne();
+    await prisma.article.delete({ where: { id: articleId } });
 
     return article!;
   }
 
   async deleteAll(): Promise<number> {
-    const result = await ArticleModel.deleteMany({});
-    return result.deletedCount;
+    const result = await prisma.article.deleteMany({});
+    return result.count;
   }
 }
 

@@ -5,7 +5,7 @@ import helmet from "helmet";
 import passport from "passport";
 import rateLimit from "express-rate-limit";
 import swaggerUi from "swagger-ui-express";
-import dbConnection from "./config/database.config";
+import { connectDatabase, disconnectDatabase } from "./config/database.config";
 import configurePassport from "./config/passport.config";
 import swaggerSpec from "./config/swagger.config";
 import router from "./routes";
@@ -50,16 +50,29 @@ app.get("/api", (_req: Request, res: Response) => {
 app.use("/api", router);
 app.use(errorHandler);
 
-dbConnection.once("open", () => {
-  console.log("Successful connection to DB");
-  app.listen(PORT, () => {
-    console.log(`Server listen on http://localhost:${PORT}`);
-  });
+async function start(): Promise<void> {
+  try {
+    await connectDatabase();
+    app.listen(PORT, () => {
+      console.log(`Server listen on http://localhost:${PORT}`);
+    });
+  } catch (error) {
+    console.error("DB connection error:", error);
+    console.error(`Server can't listen on http://localhost:${PORT}`);
+    process.exit(1);
+  }
+}
+
+process.on("SIGINT", async () => {
+  await disconnectDatabase();
+  process.exit(0);
 });
 
-dbConnection.on("error", (error: Error) => {
-  console.error("DB connection error:", error);
-  console.error(`Server can't listen on http://localhost:${PORT}`);
+process.on("SIGTERM", async () => {
+  await disconnectDatabase();
+  process.exit(0);
 });
+
+start();
 
 export default app;

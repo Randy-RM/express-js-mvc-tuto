@@ -1,36 +1,16 @@
-import { Document, Types } from "mongoose";
+import { User, Article } from "@prisma/client";
 
-export interface IUser extends Document {
-  _id: Types.ObjectId;
-  username: string;
-  email: string;
-  password: string;
-  isUserActive: boolean;
-  uniqueString?: string;
-  role: string;
-  createdAt: Date;
-  updatedAt: Date;
-  isUserPassword(password: string): Promise<boolean>;
-  toJSON(): Omit<IUser, "password" | "uniqueString" | "__v">;
-}
+export type IUser = User;
 
-export interface IArticle extends Document {
-  _id: Types.ObjectId;
-  title: string;
-  summary: string;
-  content: string;
-  isPublished: boolean;
-  isArchived: boolean;
-  user: Types.ObjectId | IUser;
-  createdAt: Date;
-  updatedAt: Date;
-}
+export type IArticle = Article;
 
-declare global {
-  namespace Express {
-    // eslint-disable-next-line @typescript-eslint/no-empty-interface
-    interface User extends IUser {}
-  }
+// Module augmentation for Express
+import "express";
+declare module "express" {
+  // Add properties to Express.User if needed
+  // eslint-disable-next-line @typescript-eslint/no-empty-object-type
+  interface User extends IUser {} // Only if you want to add extra fields
+  // Otherwise, you can use IUser directly in your code
 }
 
 export interface ApiResponse<T = unknown> {
